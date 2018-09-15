@@ -44,9 +44,10 @@ public class CameraController : MonoBehaviour
     float rotAverageY = 0F;
     private float frameCounter = 5;
     Quaternion originalRotation;
+    public GameObject shootingPoint;
 
     void Start()
-    {
+    {     
         Vector3 angles = transform.eulerAngles;
         xDeg = angles.x;
         yDeg = angles.y;
@@ -90,7 +91,7 @@ public class CameraController : MonoBehaviour
 
     private void FirstPersonCamera()
     {
-
+        shootingPoint.SetActive(true);
         transform.position = new Vector3(target.transform.position.x, target.transform.position.y + 1,  target.transform.position.z);
 
             rotAverageY = 0f;
@@ -129,11 +130,11 @@ public class CameraController : MonoBehaviour
             Quaternion yQuaternion = Quaternion.AngleAxis(rotAverageY, Vector3.left);
             Quaternion xQuaternion = Quaternion.AngleAxis(rotAverageX, Vector3.up);
 
-            transform.localRotation = originalRotation * xQuaternion * yQuaternion;
-      
+            transform.localRotation = originalRotation * xQuaternion * yQuaternion;      
     }
 
     private void ThirdPersonCamera() {
+        shootingPoint.SetActive(false);
         if (target == null)
             return;
         if (pbuffer > 0)

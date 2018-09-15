@@ -5,16 +5,20 @@ using UnityEngine;
 
 public class Character : MonoBehaviour {
 
+    private Animator anim;
     public float speed;
     public float gravity;
     private Vector3 moveDirection = Vector3.zero;
     private CharacterController controller;
     private float verticalVelocity;
+    private float turnSpeed = 150;
     public float jumpForce = 13;
     private float gravityJump = 14;
+    private Gun actualGun;
     
     void Start () {
         controller = GetComponent<CharacterController>();
+        anim = gameObject.GetComponentInChildren<Animator>();
     }
 
 	void Update () {
@@ -44,11 +48,29 @@ public class Character : MonoBehaviour {
     {
         if (Input.GetMouseButton(1) && Input.GetMouseButton(0))
         {
-            //TO DO - Shoot and bullet firing
+            actualGun = (Gun) FindObjectOfType(typeof(Gun));
+            actualGun.Shoot();
         }
     }
 
+    private Gun GetActualGun()
+    {
+        return actualGun;
+    }
+
     private void Movement()
+    {
+        Walk();
+        Run();
+        Jump();
+    }
+
+    private void Run()
+    {
+        //throw new NotImplementedException();
+    }
+
+    private void Walk()
     {
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
@@ -60,15 +82,22 @@ public class Character : MonoBehaviour {
         moveDirection.y = gravity * Time.deltaTime * Physics.gravity.y;
         controller.Move(moveDirection * Time.deltaTime);
 
-        transform.Rotate(0, horizontal, 0);
+        transform.Rotate(0, horizontal * turnSpeed * Time.deltaTime, 0);
 
-        Jump();
+        if (vertical != 0 && controller.isGrounded)
+        {
+            anim.SetInteger("AnimationPar", 1);
+        }
+        else
+        {
+            anim.SetInteger("AnimationPar", 0);
+        }
     }
 
     private void Jump()
     {
         if (controller.isGrounded)
-        {
+        {          
             verticalVelocity = -gravityJump * Time.deltaTime;
             if (Input.GetKeyDown(KeyCode.Space))
             {
