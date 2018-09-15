@@ -194,7 +194,7 @@ GameObject:
   - component: {fileID: 137559904}
   - component: {fileID: 137559908}
   m_Layer: 0
-  m_Name: Main Camera
+  m_Name: MainCamera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -294,6 +294,7 @@ MonoBehaviour:
   firstPersonMinimumY: -60
   firstPersonMaximumY: 60
   shootingPoint: {fileID: 2036950629}
+  fpsOn: 0
 --- !u!1 &324340738
 GameObject:
   m_ObjectHideFlags: 0
@@ -648,6 +649,7 @@ MonoBehaviour:
   speed: 5
   gravity: 10
   jumpForce: 11
+  mainCamera: {fileID: 0}
 --- !u!143 &1276029159
 CharacterController:
   m_ObjectHideFlags: 0
@@ -942,6 +944,7 @@ MonoBehaviour:
   speed: 5
   gravity: 10
   jumpForce: 11
+  mainCamera: {fileID: 0}
 --- !u!143 &1833317112
 CharacterController:
   m_ObjectHideFlags: 0
@@ -959,18 +962,6 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.15, z: 0}
---- !u!65 &1833317113
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1833317108}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 0
-  serializedVersion: 2
-  m_Size: {x: 0.20356019, y: 0.2554141, z: 0.1360647}
-  m_Center: {x: 0.0033221247, y: 0.12761383, z: -0.020526096}
 --- !u!1 &2025045286
 GameObject:
   m_ObjectHideFlags: 0

@@ -45,6 +45,7 @@ public class CameraController : MonoBehaviour
     private float frameCounter = 5;
     Quaternion originalRotation;
     public GameObject shootingPoint;
+    public bool fpsOn = false;
 
     void Start()
     {     
@@ -91,17 +92,18 @@ public class CameraController : MonoBehaviour
 
     private void FirstPersonCamera()
     {
+        fpsOn = true;
         shootingPoint.SetActive(true);
         transform.position = new Vector3(target.transform.position.x, target.transform.position.y + 1,  target.transform.position.z);
 
-            rotAverageY = 0f;
-            rotAverageX = 0f;
+        rotAverageY = 0f;
+        rotAverageX = 0f;
 
-            rotationY += Input.GetAxis("Mouse Y") * firstPersonSensitivityY;
-            rotationX += Input.GetAxis("Mouse X") * firstPersonSensitivityX;
+        rotationY += Input.GetAxis("Mouse Y") * firstPersonSensitivityY;
+        rotationX += Input.GetAxis("Mouse X") * firstPersonSensitivityX;
 
-            rotArrayY.Add(rotationY);
-            rotArrayX.Add(rotationX);
+        rotArrayY.Add(rotationY);
+        rotArrayX.Add(rotationX);
 
             if (rotArrayY.Count >= frameCounter)
             {
@@ -134,6 +136,7 @@ public class CameraController : MonoBehaviour
     }
 
     private void ThirdPersonCamera() {
+        fpsOn = false;
         shootingPoint.SetActive(false);
         if (target == null)
             return;

@@ -15,10 +15,14 @@ public class Character : MonoBehaviour {
     public float jumpForce = 13;
     private float gravityJump = 14;
     private Gun actualGun;
-    
+    public CameraController mainCamera;
+    private float runSpeed;
+
     void Start () {
         controller = GetComponent<CharacterController>();
         anim = gameObject.GetComponentInChildren<Animator>();
+        mainCamera = GameObject.Find("MainCamera").GetComponent<CameraController>();
+        runSpeed = speed + 3;
     }
 
 	void Update () {
@@ -60,14 +64,21 @@ public class Character : MonoBehaviour {
 
     private void Movement()
     {
-        Walk();
         Run();
+        Walk();
         Jump();
     }
 
     private void Run()
     {
-        //throw new NotImplementedException();
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            speed = runSpeed;
+        }
+        else
+        {
+            speed = runSpeed - 3;
+        }
     }
 
     private void Walk()
@@ -82,7 +93,14 @@ public class Character : MonoBehaviour {
         moveDirection.y = gravity * Time.deltaTime * Physics.gravity.y;
         controller.Move(moveDirection * Time.deltaTime);
 
-        transform.Rotate(0, horizontal * turnSpeed * Time.deltaTime, 0);
+        if (CheckFPS())
+        {
+            FpsRotation();
+        }
+        else
+        {
+            transform.Rotate(0, horizontal * turnSpeed * Time.deltaTime, 0);
+        }
 
         if (vertical != 0 && controller.isGrounded)
         {
@@ -92,6 +110,11 @@ public class Character : MonoBehaviour {
         {
             anim.SetInteger("AnimationPar", 0);
         }
+    }
+
+    private void FpsRotation()
+    {
+        transform.forward = new Vector3(mainCamera.transform.forward.x, transform.forward.y, mainCamera.transform.forward.z);
     }
 
     private void Jump()
@@ -111,5 +134,10 @@ public class Character : MonoBehaviour {
 
         Vector3 jumpVector = new Vector3(0, verticalVelocity, 0);
         controller.Move(jumpVector * Time.deltaTime);
+    }
+
+    public bool CheckFPS()
+    {
+        return mainCamera.fpsOn;
     }
 }
