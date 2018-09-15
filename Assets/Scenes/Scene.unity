@@ -124,6 +124,7 @@ GameObject:
   - component: {fileID: 137559906}
   - component: {fileID: 137559905}
   - component: {fileID: 137559904}
+  - component: {fileID: 137559908}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -194,6 +195,36 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &137559908
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 137559903}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3cc56c2d2362104d9d8c789f2832574, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 0}
+  thirdPersonTargetHeight: 1.7
+  thirdPersonDistance: 12
+  thirdPersonOffsetFromWall: 0.1
+  thirdPersonMaxDistance: 20
+  thirdPersonMinDistance: 0.6
+  thirdPersonXSpeed: 200
+  thirdPersonYSpeed: 200
+  thirdPersonMinimumY: -80
+  thirdPersonMaximumY: 80
+  thirdPersonZoomRate: 40
+  thirdPersonRotationDampening: 3
+  thirdPersonZoomDampening: 5
+  firstPersonSensitivityX: 15
+  firstPersonSensitivityY: 15
+  firstPersonMinimumX: -360
+  firstPersonMaximumX: 360
+  firstPersonMinimumY: -60
+  firstPersonMaximumY: 60
 --- !u!1 &556352395
 GameObject:
   m_ObjectHideFlags: 0
@@ -270,9 +301,11 @@ GameObject:
   - component: {fileID: 1276029156}
   - component: {fileID: 1276029155}
   - component: {fileID: 1276029154}
+  - component: {fileID: 1276029159}
+  - component: {fileID: 1276029158}
   m_Layer: 0
   m_Name: Capsule
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -344,6 +377,37 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1276029158
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1276029153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e739269839f194245a36f5a9e2127a49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 5
+  gravity: 10
+  jumpForce: 11
+--- !u!143 &1276029159
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1276029153}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Height: 2
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1798279401
 GameObject:
   m_ObjectHideFlags: 0
