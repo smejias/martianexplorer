@@ -47,6 +47,8 @@ public class CameraController : MonoBehaviour
     public GameObject shootingPoint;
     public bool fpsOn = false;
 
+    private Manager manager;
+
     void Start()
     {     
         Vector3 angles = transform.eulerAngles;
@@ -62,7 +64,7 @@ public class CameraController : MonoBehaviour
         originalRotation = transform.localRotation;
 
         Cursor.visible = false;
-
+        manager = GameObject.Find("GameManager").GetComponent<Manager>();
     }
     void Update()
     {
@@ -80,13 +82,16 @@ public class CameraController : MonoBehaviour
 
     private void SwitchCameras()
     {
-        if (Input.GetMouseButton(1))
+        if (!manager.Paused)
         {
-            FirstPersonCamera();
-        }
-        else
-        {
-            ThirdPersonCamera();
+            if (Input.GetMouseButton(1))
+            {
+                FirstPersonCamera();
+            }
+            else
+            {
+                ThirdPersonCamera();
+            }
         }
     }
 

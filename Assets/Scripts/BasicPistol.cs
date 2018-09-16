@@ -9,6 +9,7 @@ public class BasicPistol : Gun {
       fireRate = 0.5f;
       weaponRange = 50;
       hitForce = 100;
+      manager = GameObject.Find("GameManager").GetComponent<Manager>();
     }
 	
 	void Update () {

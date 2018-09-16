@@ -17,6 +17,7 @@ public class Character : MonoBehaviour {
     private Gun actualGun;
     public CameraController mainCamera;
     private float runSpeed;
+    public Manager manager;
 
     void Start () {
         controller = GetComponent<CharacterController>();
@@ -33,7 +34,7 @@ public class Character : MonoBehaviour {
 
     private void InteractWithObject()
     {
-        if (Input.GetKeyDown(KeyCode.E) && InteractableObjectNearby())
+        if (Input.GetKeyDown(manager.utils.interactWithObjects) && InteractableObjectNearby())
         {
             //TO DO - Action when interact
         }
@@ -71,7 +72,7 @@ public class Character : MonoBehaviour {
 
     private void Run()
     {
-        if (Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetKey(manager.utils.run))
         {
             speed = runSpeed;
         }
@@ -122,7 +123,7 @@ public class Character : MonoBehaviour {
         if (controller.isGrounded)
         {          
             verticalVelocity = -gravityJump * Time.deltaTime;
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(manager.utils.jump))
             {
                 verticalVelocity = jumpForce;
             }
@@ -139,5 +140,11 @@ public class Character : MonoBehaviour {
     public bool CheckFPS()
     {
         return mainCamera.fpsOn;
+    }
+
+    public void GodMode()
+    {
+        jumpForce += 50;
+        //TO DO - Lot of damage and inmunity
     }
 }

@@ -15,8 +15,9 @@ public class Gun : MonoBehaviour {
     protected AudioSource gunAudio;                                       
     protected LineRenderer laserLine;
     protected float nextFire;
+    protected Manager manager;
 
-    void Start () {        
+    void Start () {
     }
 	
 	void Update () {
@@ -24,7 +25,7 @@ public class Gun : MonoBehaviour {
 
     public virtual void Shoot()
     {
-        if (Time.time > nextFire)
+        if (Time.time > nextFire && !manager.Paused)
         {
             nextFire = Time.time + fireRate;
             StartCoroutine(ShotEffect());
