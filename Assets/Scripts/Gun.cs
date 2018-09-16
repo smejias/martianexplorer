@@ -11,7 +11,7 @@ public class Gun : MonoBehaviour {
     protected float hitForce;                                       
     public Transform gunEnd;
     public Camera mainCamera;                                              
-    private WaitForSeconds shotDuration = new WaitForSeconds(0.07f);    
+    protected WaitForSeconds shotDuration = new WaitForSeconds(0.07f);    
     protected AudioSource gunAudio;                                       
     protected LineRenderer laserLine;
     protected float nextFire;

@@ -5,15 +5,15 @@ using UnityEngine;
 public class Manager : MonoBehaviour {
 
     public GameObject console;
-    private Console consoleScript;
+    private Console _consoleScript;
     public Character character;
     public Utils utils;
-    private bool paused;
+    private bool _paused;
 
     void Start () {
-        consoleScript = console.GetComponent<Console>();
+        _consoleScript = console.GetComponent<Console>();
         RegisterAllCommands();
-        paused = false;
+        _paused = false;
     }
 	
 	void Update () {
@@ -25,22 +25,22 @@ public class Manager : MonoBehaviour {
         if (Input.GetKeyDown(utils.openConsole))
         {
             console.SetActive(!console.activeSelf);
-            consoleScript.Initialize();
-            Pause(!paused);
+            _consoleScript.Initialize();
+            Pause(!_paused);
         }
     }
 
     public void RegisterAllCommands()
     {
-        Console.instance.Registercomand("/help", consoleScript.Help, utils.help);
+        Console.instance.Registercomand("/help", _consoleScript.Help, utils.help);
         Console.instance.Registercomand("/godmode", character.GodMode, utils.godMode);
     }
 
     public void PauseGame()
     {
-        if (Input.GetKeyDown(utils.pause) && !paused)
+        if (Input.GetKeyDown(utils.pause) && !_paused)
         {
-            Pause(!paused);
+            Pause(!_paused);
         }
     }
     
@@ -58,19 +58,19 @@ public class Manager : MonoBehaviour {
         }
 
         Time.timeScale = pauseScale;
-        paused = pause;
+        _paused = pause;
     }
 
     public bool Paused
     {
         get
         {
-            return paused;
+            return _paused;
         }
 
         set
         {
-            paused = value;
+            _paused = value;
         }
     }
 }

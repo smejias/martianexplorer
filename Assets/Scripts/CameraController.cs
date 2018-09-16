@@ -19,15 +19,15 @@ public class CameraController : MonoBehaviour
     public float thirdPersonZoomRate = 40f;               
     public float thirdPersonRotationDampening = 3.0f;     
     public float thirdPersonZoomDampening = 5.0f;         
-    private LayerMask collisionLayers = -1;                                                    
-    private float xDeg = 0.0f;
-    private float yDeg = 0.0f;
-    private float currentDistance;
-    private float desiredDistance;
-    private float correctedDistance;
-    private bool mouseSideButton = false;
-    private float pbuffer = 0.0f;              
-    private float coolDown = 0.5f;
+    private LayerMask _collisionLayers = -1;                                                    
+    private float _xDeg = 0.0f;
+    private float _yDeg = 0.0f;
+    private float _currentDistance;
+    private float _desiredDistance;
+    private float _correctedDistance;
+    private bool _mouseSideButton = false;
+    private float _pbuffer = 0.0f;              
+    private float _coolDown = 0.5f;
 
     //FP
     public float firstPersonSensitivityX = 15F;
@@ -38,11 +38,11 @@ public class CameraController : MonoBehaviour
     public float firstPersonMaximumY = 60F;
     float rotationX = 0F;
     float rotationY = 0F;
-    private List<float> rotArrayX = new List<float>();
+    private List<float> _rotArrayX = new List<float>();
     float rotAverageX = 0F;
-    private List<float> rotArrayY = new List<float>();
+    private List<float> _rotArrayY = new List<float>();
     float rotAverageY = 0F;
-    private float frameCounter = 5;
+    private float _frameCounter = 5;
     Quaternion originalRotation;
     public GameObject shootingPoint;
     public bool fpsOn = false;
@@ -52,11 +52,11 @@ public class CameraController : MonoBehaviour
     void Start()
     {     
         Vector3 angles = transform.eulerAngles;
-        xDeg = angles.x;
-        yDeg = angles.y;
-        currentDistance = thirdPersonDistance;
-        desiredDistance = thirdPersonDistance;
-        correctedDistance = thirdPersonDistance;
+        _xDeg = angles.x;
+        _yDeg = angles.y;
+        _currentDistance = thirdPersonDistance;
+        _desiredDistance = thirdPersonDistance;
+        _correctedDistance = thirdPersonDistance;
 
         if (GetComponent<Rigidbody>())
             GetComponent<Rigidbody>().freezeRotation = true;
@@ -107,29 +107,29 @@ public class CameraController : MonoBehaviour
         rotationY += Input.GetAxis("Mouse Y") * firstPersonSensitivityY;
         rotationX += Input.GetAxis("Mouse X") * firstPersonSensitivityX;
 
-        rotArrayY.Add(rotationY);
-        rotArrayX.Add(rotationX);
+        _rotArrayY.Add(rotationY);
+        _rotArrayX.Add(rotationX);
 
-            if (rotArrayY.Count >= frameCounter)
+            if (_rotArrayY.Count >= _frameCounter)
             {
-                rotArrayY.RemoveAt(0);
+                _rotArrayY.RemoveAt(0);
             }
-            if (rotArrayX.Count >= frameCounter)
+            if (_rotArrayX.Count >= _frameCounter)
             {
-                rotArrayX.RemoveAt(0);
-            }
-
-            for (int j = 0; j < rotArrayY.Count; j++)
-            {
-                rotAverageY += rotArrayY[j];
-            }
-            for (int i = 0; i < rotArrayX.Count; i++)
-            {
-                rotAverageX += rotArrayX[i];
+                _rotArrayX.RemoveAt(0);
             }
 
-            rotAverageY /= rotArrayY.Count;
-            rotAverageX /= rotArrayX.Count;
+            for (int j = 0; j < _rotArrayY.Count; j++)
+            {
+                rotAverageY += _rotArrayY[j];
+            }
+            for (int i = 0; i < _rotArrayX.Count; i++)
+            {
+                rotAverageX += _rotArrayX[i];
+            }
+
+            rotAverageY /= _rotArrayY.Count;
+            rotAverageX /= _rotArrayX.Count;
 
             rotAverageY = ClampAngle(rotAverageY, firstPersonMinimumY, firstPersonMaximumY);
             rotAverageX = ClampAngle(rotAverageX, firstPersonMinimumX, firstPersonMaximumX);
@@ -145,53 +145,52 @@ public class CameraController : MonoBehaviour
         shootingPoint.SetActive(false);
         if (target == null)
             return;
-        if (pbuffer > 0)
-            pbuffer -= Time.deltaTime;
-        if (pbuffer < 0) pbuffer = 0;
+        if (_pbuffer > 0)
+            _pbuffer -= Time.deltaTime;
+        if (_pbuffer < 0) _pbuffer = 0;
 
-        if ((Input.GetAxis("Mouse ScrollWheel") != 0) && (pbuffer == 0))
+        if ((Input.GetAxis("Mouse ScrollWheel") != 0) && (_pbuffer == 0))
         {
-            pbuffer = coolDown;
-            mouseSideButton = !mouseSideButton;
+            _pbuffer = _coolDown;
+            _mouseSideButton = !_mouseSideButton;
         }
-        if (mouseSideButton && Input.GetAxis("Vertical") != 0)
-            mouseSideButton = false;
+        if (_mouseSideButton && Input.GetAxis("Vertical") != 0)
+            _mouseSideButton = false;
 
         Vector3 vTargetOffset;
 
         if (GUIUtility.hotControl == 0)
         {
-                xDeg += Input.GetAxis("Mouse X") * thirdPersonXSpeed * 0.02f;
-
-                yDeg -= Input.GetAxis("Mouse Y") * thirdPersonYSpeed * 0.02f;
+            _xDeg += Input.GetAxis("Mouse X") * thirdPersonXSpeed * 0.02f;
+            _yDeg -= Input.GetAxis("Mouse Y") * thirdPersonYSpeed * 0.02f;
 
         }
-        yDeg = ClampAngle(yDeg, thirdPersonMinimumY, thirdPersonMaximumY);
+        _yDeg = ClampAngle(_yDeg, thirdPersonMinimumY, thirdPersonMaximumY);
 
-        Quaternion rotation = Quaternion.Euler(yDeg, xDeg, 0);
+        Quaternion rotation = Quaternion.Euler(_yDeg, _xDeg, 0);
 
-        desiredDistance -= Input.GetAxis("Mouse ScrollWheel") * Time.deltaTime * thirdPersonZoomRate * Mathf.Abs(desiredDistance);
-        desiredDistance = Mathf.Clamp(desiredDistance, thirdPersonMinDistance, thirdPersonMaxDistance);
-        correctedDistance = desiredDistance;
+        _desiredDistance -= Input.GetAxis("Mouse ScrollWheel") * Time.deltaTime * thirdPersonZoomRate * Mathf.Abs(_desiredDistance);
+        _desiredDistance = Mathf.Clamp(_desiredDistance, thirdPersonMinDistance, thirdPersonMaxDistance);
+        _correctedDistance = _desiredDistance;
 
         vTargetOffset = new Vector3(0, -thirdPersonTargetHeight, 0);
-        Vector3 position = target.transform.position - (rotation * Vector3.forward * desiredDistance + vTargetOffset);
+        Vector3 position = target.transform.position - (rotation * Vector3.forward * _desiredDistance + vTargetOffset);
 
         RaycastHit collisionHit;
         Vector3 trueTargetPosition = new Vector3(target.transform.position.x, target.transform.position.y + thirdPersonTargetHeight, target.transform.position.z);
 
         var isCorrected = false;
-        if (Physics.Linecast(trueTargetPosition, position, out collisionHit, collisionLayers))
+        if (Physics.Linecast(trueTargetPosition, position, out collisionHit, _collisionLayers))
         {
-            correctedDistance = Vector3.Distance(trueTargetPosition, collisionHit.point) - thirdPersonOffsetFromWall;
+            _correctedDistance = Vector3.Distance(trueTargetPosition, collisionHit.point) - thirdPersonOffsetFromWall;
             isCorrected = true;
         }
 
-        currentDistance = !isCorrected || correctedDistance > currentDistance ? Mathf.Lerp(currentDistance, correctedDistance, Time.deltaTime * thirdPersonZoomDampening) : correctedDistance;
+        _currentDistance = !isCorrected || _correctedDistance > _currentDistance ? Mathf.Lerp(_currentDistance, _correctedDistance, Time.deltaTime * thirdPersonZoomDampening) : _correctedDistance;
 
-        currentDistance = Mathf.Clamp(currentDistance, thirdPersonMinDistance, thirdPersonMaxDistance);
+        _currentDistance = Mathf.Clamp(_currentDistance, thirdPersonMinDistance, thirdPersonMaxDistance);
 
-        position = target.transform.position - (rotation * Vector3.forward * currentDistance + vTargetOffset);
+        position = target.transform.position - (rotation * Vector3.forward * _currentDistance + vTargetOffset);
 
         transform.rotation = rotation;
         transform.position = position;
@@ -201,7 +200,7 @@ public class CameraController : MonoBehaviour
     {
         float targetRotationAngle = target.transform.eulerAngles.y;
         float currentRotationAngle = transform.eulerAngles.y;
-        xDeg = Mathf.LerpAngle(currentRotationAngle, targetRotationAngle, thirdPersonRotationDampening * Time.deltaTime);
+        _xDeg = Mathf.LerpAngle(currentRotationAngle, targetRotationAngle, thirdPersonRotationDampening * Time.deltaTime);
     }
     
     private float ClampAngle(float angle, float min, float max)

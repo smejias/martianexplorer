@@ -5,25 +5,25 @@ using UnityEngine;
 
 public class Character : MonoBehaviour {
 
-    private Animator anim;
+    private Animator _anim;
     public float speed;
     public float gravity;
-    private Vector3 moveDirection = Vector3.zero;
-    private CharacterController controller;
-    private float verticalVelocity;
-    private float turnSpeed = 150;
+    private Vector3 _moveDirection = Vector3.zero;
+    private CharacterController _controller;
+    private float _verticalVelocity;
+    private float _turnSpeed = 150;
     public float jumpForce = 13;
-    private float gravityJump = 14;
-    private Gun actualGun;
+    private float _gravityJump = 14;
+    private Gun _actualGun;
     public CameraController mainCamera;
-    private float runSpeed;
+    private float _runSpeed;
     public Manager manager;
 
     void Start () {
-        controller = GetComponent<CharacterController>();
-        anim = gameObject.GetComponentInChildren<Animator>();
+        _controller = GetComponent<CharacterController>();
+        _anim = gameObject.GetComponentInChildren<Animator>();
         mainCamera = GameObject.Find("MainCamera").GetComponent<CameraController>();
-        runSpeed = speed + 3;
+        _runSpeed = speed + 3;
     }
 
 	void Update () {
@@ -53,14 +53,9 @@ public class Character : MonoBehaviour {
     {
         if (Input.GetMouseButton(1) && Input.GetMouseButton(0))
         {
-            actualGun = (Gun) FindObjectOfType(typeof(Gun));
-            actualGun.Shoot();
+            _actualGun = (Gun) FindObjectOfType(typeof(Gun));
+            _actualGun.Shoot();
         }
-    }
-
-    private Gun GetActualGun()
-    {
-        return actualGun;
     }
 
     private void Movement()
@@ -74,11 +69,11 @@ public class Character : MonoBehaviour {
     {
         if (Input.GetKey(manager.utils.run))
         {
-            speed = runSpeed;
+            speed = _runSpeed;
         }
         else
         {
-            speed = runSpeed - 3;
+            speed = _runSpeed - 3;
         }
     }
 
@@ -87,12 +82,12 @@ public class Character : MonoBehaviour {
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 
-        moveDirection = new Vector3(0, 0, vertical);
-        moveDirection = transform.TransformDirection(moveDirection);
-        moveDirection *= speed;
+        _moveDirection = new Vector3(0, 0, vertical);
+        _moveDirection = transform.TransformDirection(_moveDirection);
+        _moveDirection *= speed;
 
-        moveDirection.y = gravity * Time.deltaTime * Physics.gravity.y;
-        controller.Move(moveDirection * Time.deltaTime);
+        _moveDirection.y = gravity * Time.deltaTime * Physics.gravity.y;
+        _controller.Move(_moveDirection * Time.deltaTime);
 
         if (CheckFPS())
         {
@@ -100,16 +95,16 @@ public class Character : MonoBehaviour {
         }
         else
         {
-            transform.Rotate(0, horizontal * turnSpeed * Time.deltaTime, 0);
+            transform.Rotate(0, horizontal * _turnSpeed * Time.deltaTime, 0);
         }
 
-        if (vertical != 0 && controller.isGrounded)
+        if (vertical != 0 && _controller.isGrounded)
         {
-            anim.SetInteger("AnimationPar", 1);
+            _anim.SetInteger("AnimationPar", 1);
         }
         else
         {
-            anim.SetInteger("AnimationPar", 0);
+            _anim.SetInteger("AnimationPar", 0);
         }
     }
 
@@ -120,21 +115,21 @@ public class Character : MonoBehaviour {
 
     private void Jump()
     {
-        if (controller.isGrounded)
+        if (_controller.isGrounded)
         {          
-            verticalVelocity = -gravityJump * Time.deltaTime;
+            _verticalVelocity = -_gravityJump * Time.deltaTime;
             if (Input.GetKeyDown(manager.utils.jump))
             {
-                verticalVelocity = jumpForce;
+                _verticalVelocity = jumpForce;
             }
         }
         else
         {
-            verticalVelocity -= gravityJump * Time.deltaTime;
+            _verticalVelocity -= _gravityJump * Time.deltaTime;
         }
 
-        Vector3 jumpVector = new Vector3(0, verticalVelocity, 0);
-        controller.Move(jumpVector * Time.deltaTime);
+        Vector3 jumpVector = new Vector3(0, _verticalVelocity, 0);
+        _controller.Move(jumpVector * Time.deltaTime);
     }
 
     public bool CheckFPS()
