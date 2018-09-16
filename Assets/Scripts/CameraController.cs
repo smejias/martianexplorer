@@ -202,7 +202,6 @@ public class CameraController : MonoBehaviour
         float targetRotationAngle = target.transform.eulerAngles.y;
         float currentRotationAngle = transform.eulerAngles.y;
         xDeg = Mathf.LerpAngle(currentRotationAngle, targetRotationAngle, thirdPersonRotationDampening * Time.deltaTime);
-
     }
     
     private float ClampAngle(float angle, float min, float max)

@@ -79,9 +79,9 @@ public class Console : MonoBehaviour {
         input.Select();
     }
 
-    public void Registercomand(string commandName, FunctionPrototype fx, string description)
+    public void Registercomand(string commandName, FunctionPrototype function, string description)
     {
-        allCommandsEffects.Add(commandName, fx);
+        allCommandsEffects.Add(commandName, function);
         allCommands.Add(commandName, description);
     }
 
