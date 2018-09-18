@@ -32,6 +32,7 @@ public class Gun : MonoBehaviour {
             Vector3 rayOrigin = mainCamera.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0.0f));
             RaycastHit hit;
             laserLine.SetPosition(0, gunEnd.position);
+            FindObjectOfType<AudioManager>().Play("Laser Shot");
 
             if (Physics.Raycast(rayOrigin, mainCamera.transform.forward, out hit, weaponRange))
             {
@@ -40,11 +41,14 @@ public class Gun : MonoBehaviour {
                 if (hit.rigidbody != null)
                 {
                     hit.rigidbody.AddForce(-hit.normal * hitForce);
+                    hit.transform.SendMessage("Hit");
+                    Debug.Log("Hit something");
                 }
             }
             else
             {
                 laserLine.SetPosition(1, rayOrigin + (mainCamera.transform.forward * weaponRange));
+                
             }
         }
     }

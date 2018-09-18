@@ -18,15 +18,24 @@ public class Character : MonoBehaviour {
     public CameraController mainCamera;
     private float _runSpeed;
     public Manager manager;
+    public float health, currentHealth;
+
+    //Material _material;
+    public GameObject flashlight;
+   
 
     void Start () {
         _controller = GetComponent<CharacterController>();
         _anim = gameObject.GetComponentInChildren<Animator>();
         mainCamera = GameObject.Find("MainCamera").GetComponent<CameraController>();
         _runSpeed = speed + 3;
+        currentHealth = health;
+
+       //_material = GetComponent<Renderer>().material; 
     }
 
 	void Update () {
+
         Movement();
         Shooting();
         InteractWithObject();
@@ -63,6 +72,7 @@ public class Character : MonoBehaviour {
         Run();
         Walk();
         Jump();
+        Flashlight();
     }
 
     private void Run()
@@ -70,6 +80,7 @@ public class Character : MonoBehaviour {
         if (Input.GetKey(manager.utils.run))
         {
             speed = _runSpeed;
+            
         }
         else
         {
@@ -82,12 +93,15 @@ public class Character : MonoBehaviour {
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 
+
         _moveDirection = new Vector3(0, 0, vertical);
         _moveDirection = transform.TransformDirection(_moveDirection);
         _moveDirection *= speed;
 
         _moveDirection.y = gravity * Time.deltaTime * Physics.gravity.y;
         _controller.Move(_moveDirection * Time.deltaTime);
+
+      
 
         if (CheckFPS())
         {
@@ -141,5 +155,26 @@ public class Character : MonoBehaviour {
     {
         jumpForce += 50;
         //TO DO - Lot of damage and inmunity
+    }
+
+    public void TakeDamage(float damage)
+    {
+        currentHealth -= damage;
+        //_material.color = Color.red;
+        
+        
+    }
+
+    public void Flashlight()
+    {
+        if (Input.GetKeyDown(KeyCode.Q) && flashlight.activeInHierarchy == false)
+        {
+
+            flashlight.SetActive(true);
+        } else if (Input.GetKeyDown(KeyCode.Q) && flashlight.activeInHierarchy == true)
+
+        {
+            flashlight.SetActive(false);
+        }
     }
 }

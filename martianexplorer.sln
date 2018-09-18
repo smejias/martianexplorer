@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "martianexplorer", "martianexplorer.csproj", "{BA4F0BF6-C74F-E522-BAC1-37F214370B54}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "martianexplorer.Editor", "martianexplorer.Editor.csproj", "{46141220-A290-D9EB-F136-3728C59A8D52}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{BA4F0BF6-C74F-E522-BAC1-37F214370B54}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA4F0BF6-C74F-E522-BAC1-37F214370B54}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BA4F0BF6-C74F-E522-BAC1-37F214370B54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46141220-A290-D9EB-F136-3728C59A8D52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46141220-A290-D9EB-F136-3728C59A8D52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46141220-A290-D9EB-F136-3728C59A8D52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46141220-A290-D9EB-F136-3728C59A8D52}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
