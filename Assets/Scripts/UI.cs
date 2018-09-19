@@ -7,24 +7,21 @@ public class UI : MonoBehaviour {
 
     public Text damage;   
     public GameObject player;
-    private float playerCurrentHealth;
-    private float damageTaken;
+    private float _playerCurrentHealth;
 
-    // Use this for initialization
-    void Start () {
-        
+    void Start ()
+    {        
         
 	}
 	
-	// Update is called once per frame
-	void Update () {
-
+	void Update ()
+    {
         CurrentLife();
     }
 
     void CurrentLife()
     {
-        playerCurrentHealth = player.GetComponent<Character>().currentHealth;
-        damage.text = "Life: " + playerCurrentHealth;
+        _playerCurrentHealth = player.GetComponent<Character>().currentHealth;
+        damage.text = "Life: " + _playerCurrentHealth;
     }
 }

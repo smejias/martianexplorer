@@ -10,6 +10,7 @@ public class Utils : MonoBehaviour {
     public KeyCode run;
     public KeyCode enter;
     public KeyCode pause;
+    public KeyCode flashlight;
 
     public string help = "List of available commands";
     public string godMode = "Inmunity to everything and brutal damage";

@@ -6,7 +6,6 @@ public class AudioManager : MonoBehaviour {
 
     public Sound[] sounds;
 
-	// Use this for initialization
 	void Awake() {
 
         foreach (Sound s in sounds)
@@ -17,13 +16,12 @@ public class AudioManager : MonoBehaviour {
             s.source.volume = s.volumen;
             s.source.pitch = s.pitch;
             s.source.loop = s.loop; 
-        }
-	
+        }	
 	}
 
    private void Start()
     {
-        //Play("Theme");
+
     }
 
     public void Play(string name)
@@ -37,7 +35,6 @@ public class AudioManager : MonoBehaviour {
     {
         Sound s = Array.Find(sounds, sound => sound.name == name);
         s.source.Stop();
-
     }
 
 

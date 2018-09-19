@@ -19,43 +19,40 @@ public class Character : MonoBehaviour {
     private float _runSpeed;
     public Manager manager;
     public float health, currentHealth;
-
-    //Material _material;
     public GameObject flashlight;
-   
+    private InteractableObject _interactableObject;
+    public float useObjectRange;
 
     void Start () {
         _controller = GetComponent<CharacterController>();
         _anim = gameObject.GetComponentInChildren<Animator>();
         mainCamera = GameObject.Find("MainCamera").GetComponent<CameraController>();
-        _runSpeed = speed + 3;
+        _runSpeed = speed + 5;
         currentHealth = health;
-
-       //_material = GetComponent<Renderer>().material; 
+        flashlight.SetActive(false);
     }
 
 	void Update () {
-
         Movement();
         Shooting();
-        InteractWithObject();
-	}
-
-    private void InteractWithObject()
-    {
-        if (Input.GetKeyDown(manager.utils.interactWithObjects) && InteractableObjectNearby())
-        {
-            //TO DO - Action when interact
-        }
+        Flashlight();
+        InteractableObjectNearby();
     }
 
-    private bool InteractableObjectNearby()
+    private void InteractWithObject(GameObject interactableObject)
     {
-        bool interactable = false;
+        _interactableObject = interactableObject.GetComponent<InteractableObject>();
+        _interactableObject.Activate(transform.position);
+    }
 
-        //TO DO - Find interactable objects and check the distance
-
-        return interactable;
+    private void InteractableObjectNearby()
+    {
+        if (mainCamera.MousePosition(useObjectRange) != null && 
+            mainCamera.MousePosition(useObjectRange).tag.Equals("InteractableObject") && 
+            Input.GetKeyDown(manager.utils.interactWithObjects))
+        {
+            InteractWithObject(mainCamera.MousePosition(useObjectRange));
+        }
     }
 
     private void Shooting()
@@ -72,19 +69,17 @@ public class Character : MonoBehaviour {
         Run();
         Walk();
         Jump();
-        Flashlight();
     }
 
     private void Run()
     {
         if (Input.GetKey(manager.utils.run))
         {
-            speed = _runSpeed;
-            
+            speed = _runSpeed;            
         }
         else
         {
-            speed = _runSpeed - 3;
+            speed = _runSpeed - 5;
         }
     }
 
@@ -93,15 +88,12 @@ public class Character : MonoBehaviour {
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 
-
         _moveDirection = new Vector3(0, 0, vertical);
         _moveDirection = transform.TransformDirection(_moveDirection);
         _moveDirection *= speed;
 
         _moveDirection.y = gravity * Time.deltaTime * Physics.gravity.y;
-        _controller.Move(_moveDirection * Time.deltaTime);
-
-      
+        _controller.Move(_moveDirection * Time.deltaTime);      
 
         if (CheckFPS())
         {
@@ -141,7 +133,6 @@ public class Character : MonoBehaviour {
         {
             _verticalVelocity -= _gravityJump * Time.deltaTime;
         }
-
         Vector3 jumpVector = new Vector3(0, _verticalVelocity, 0);
         _controller.Move(jumpVector * Time.deltaTime);
     }
@@ -159,22 +150,14 @@ public class Character : MonoBehaviour {
 
     public void TakeDamage(float damage)
     {
-        currentHealth -= damage;
-        //_material.color = Color.red;
-        
-        
+        currentHealth -= damage;  
     }
 
     public void Flashlight()
     {
-        if (Input.GetKeyDown(KeyCode.Q) && flashlight.activeInHierarchy == false)
+        if (Input.GetKeyDown(manager.utils.flashlight))
         {
-
-            flashlight.SetActive(true);
-        } else if (Input.GetKeyDown(KeyCode.Q) && flashlight.activeInHierarchy == true)
-
-        {
-            flashlight.SetActive(false);
+            flashlight.SetActive(!flashlight.activeInHierarchy);
         }
     }
 }

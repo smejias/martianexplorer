@@ -63,16 +63,29 @@ public class CameraController : MonoBehaviour
 
         originalRotation = transform.localRotation;
 
-        Cursor.visible = false;
         manager = GameObject.Find("GameManager").GetComponent<Manager>();
     }
+
     void Update()
     {
         if (target == null)
         {
             target = GameObject.FindGameObjectWithTag("Player") as GameObject;
         }
+    }
 
+    public GameObject MousePosition(float hitDistance)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        GameObject mouseObject = null;
+
+        if (Physics.Raycast(ray, out hit, hitDistance))
+        {
+            mouseObject = hit.collider.gameObject;
+        }
+
+        return mouseObject;
     }
 
     void LateUpdate()
