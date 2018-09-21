@@ -17,34 +17,14 @@ public class InteractableObject : MonoBehaviour {
     {
     }
 
-    void Hit()
-    {
-        if (ps != null)
-        {
-            ps.GetComponent<Fire>().switchOn = false;
-        }
-
-        FindObjectOfType<AudioManager>().Play("Transformer Down");
-        GetComponent<Renderer>().material = offMaterial;
-        GetComponent<Renderer>().material = lightOn;
-    }
-
     public virtual void Activate(Vector3 playerPosition)
     {
-        if (Vector3.Distance(transform.position, playerPosition) < 3f)
-        {
             GetComponent<Renderer>().material = lightOn;
             if (door != null)
             {
                 door.TurnOffOn(false);
             }
-
-            TriggerObject();
-        }
-        else
-        {
-            GetComponent<Renderer>().material = offMaterial;
-        }
+            TriggerObject();            
     }
 
     public void TriggerObject()

@@ -1,24 +1,25 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 public class CameraController : MonoBehaviour
 {
     public GameObject target;     
     
     //TP
-    public float thirdPersonTargetHeight = 1.7f;          
-    public float thirdPersonDistance = 12.0f;             
-    public float thirdPersonOffsetFromWall = 0.1f;        
-    public float thirdPersonMaxDistance = 20f;            
-    public float thirdPersonMinDistance = 0.6f;           
-    public float thirdPersonXSpeed = 200.0f;              
-    public float thirdPersonYSpeed = 200.0f;              
-    public float thirdPersonMinimumY = -80f;             
-    public float thirdPersonMaximumY = 80f;              
-    public float thirdPersonZoomRate = 40f;               
-    public float thirdPersonRotationDampening = 3.0f;     
-    public float thirdPersonZoomDampening = 5.0f;         
+    public float thirdPersonTargetHeight;          
+    public float thirdPersonDistance;             
+    public float thirdPersonOffsetFromWall;        
+    public float thirdPersonMaxDistance;            
+    public float thirdPersonMinDistance;           
+    public float thirdPersonXSpeed;              
+    public float thirdPersonYSpeed;              
+    public float thirdPersonMinimumY;             
+    public float thirdPersonMaximumY;              
+    public float thirdPersonZoomRate;               
+    public float thirdPersonRotationDampening;     
+    public float thirdPersonZoomDampening;         
     private LayerMask _collisionLayers = -1;                                                    
     private float _xDeg = 0.0f;
     private float _yDeg = 0.0f;
@@ -30,12 +31,12 @@ public class CameraController : MonoBehaviour
     private float _coolDown = 0.5f;
 
     //FP
-    public float firstPersonSensitivityX = 15F;
-    public float firstPersonSensitivityY = 15F;
-    public float firstPersonMinimumX = -360F;
-    public float firstPersonMaximumX = 360F;
-    public float firstPersonMinimumY = -60F;
-    public float firstPersonMaximumY = 60F;
+    public float firstPersonSensitivityX;
+    public float firstPersonSensitivityY;
+    public float firstPersonMinimumX;
+    public float firstPersonMaximumX;
+    public float firstPersonMinimumY;
+    public float firstPersonMaximumY;
     float rotationX = 0F;
     float rotationY = 0F;
     private List<float> _rotArrayX = new List<float>();
@@ -68,19 +69,24 @@ public class CameraController : MonoBehaviour
 
     void Update()
     {
+        FindTarget();
+    }
+
+    private void FindTarget()
+    {
         if (target == null)
         {
             target = GameObject.FindGameObjectWithTag("Player") as GameObject;
         }
-    }
+    }  
 
-    public GameObject MousePosition(float hitDistance)
+    public GameObject MousePosition()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         GameObject mouseObject = null;
 
-        if (Physics.Raycast(ray, out hit, hitDistance))
+        if (Physics.Raycast(ray, out hit))
         {
             mouseObject = hit.collider.gameObject;
         }
@@ -110,6 +116,7 @@ public class CameraController : MonoBehaviour
 
     private void FirstPersonCamera()
     {
+        Cursor.visible = false;
         fpsOn = true;
         shootingPoint.SetActive(true);
         transform.position = new Vector3(target.transform.position.x, target.transform.position.y + 1,  target.transform.position.z);
@@ -153,60 +160,63 @@ public class CameraController : MonoBehaviour
             transform.localRotation = originalRotation * xQuaternion * yQuaternion;      
     }
 
-    private void ThirdPersonCamera() {
-        fpsOn = false;
-        shootingPoint.SetActive(false);
-        if (target == null)
-            return;
-        if (_pbuffer > 0)
-            _pbuffer -= Time.deltaTime;
-        if (_pbuffer < 0) _pbuffer = 0;
-
-        if ((Input.GetAxis("Mouse ScrollWheel") != 0) && (_pbuffer == 0))
+    private void ThirdPersonCamera()
+    {
+        Cursor.visible = true;
+        if (!manager.Paused)
         {
-            _pbuffer = _coolDown;
-            _mouseSideButton = !_mouseSideButton;
+            fpsOn = false;
+            shootingPoint.SetActive(false);
+            if (target == null)
+                return;
+            if (_pbuffer > 0)
+                _pbuffer -= Time.deltaTime;
+            if (_pbuffer < 0) _pbuffer = 0;
+
+            if ((Input.GetAxis("Mouse ScrollWheel") != 0) && (_pbuffer == 0))
+            {
+                _pbuffer = _coolDown;
+                _mouseSideButton = !_mouseSideButton;
+            }
+            if (_mouseSideButton && Input.GetAxis("Vertical") != 0)
+                _mouseSideButton = false;
+
+            Vector3 vTargetOffset;
+
+            if (GUIUtility.hotControl == 0)
+            {
+                _xDeg += Input.GetAxis("HorizontalCamera") * thirdPersonXSpeed * 0.02f;
+            }
+            _yDeg = ClampAngle(_yDeg, thirdPersonMinimumY, thirdPersonMaximumY);
+
+            Quaternion rotation = Quaternion.Euler(_yDeg, _xDeg, 0);
+
+            _desiredDistance -= Input.GetAxis("Mouse ScrollWheel") * Time.deltaTime * thirdPersonZoomRate * Mathf.Abs(_desiredDistance);
+            _desiredDistance = Mathf.Clamp(_desiredDistance, thirdPersonMinDistance, thirdPersonMaxDistance);
+            _correctedDistance = _desiredDistance;
+
+            vTargetOffset = new Vector3(0, -thirdPersonTargetHeight, 0);
+            Vector3 position = target.transform.position - (rotation * Vector3.forward * _desiredDistance + vTargetOffset);
+
+            RaycastHit collisionHit;
+            Vector3 trueTargetPosition = new Vector3(target.transform.position.x, target.transform.position.y + thirdPersonTargetHeight, target.transform.position.z);
+
+            var isCorrected = false;
+            if (Physics.Linecast(trueTargetPosition, position, out collisionHit, _collisionLayers))
+            {
+                _correctedDistance = Vector3.Distance(trueTargetPosition, collisionHit.point) - thirdPersonOffsetFromWall;
+                isCorrected = true;
+            }
+
+            _currentDistance = !isCorrected || _correctedDistance > _currentDistance ? Mathf.Lerp(_currentDistance, _correctedDistance, Time.deltaTime * thirdPersonZoomDampening) : _correctedDistance;
+
+            _currentDistance = Mathf.Clamp(_currentDistance, thirdPersonMinDistance, thirdPersonMaxDistance);
+
+            position = target.transform.position - (rotation * Vector3.forward * _currentDistance + vTargetOffset);
+
+            transform.rotation = rotation;
+            transform.position = position;
         }
-        if (_mouseSideButton && Input.GetAxis("Vertical") != 0)
-            _mouseSideButton = false;
-
-        Vector3 vTargetOffset;
-
-        if (GUIUtility.hotControl == 0)
-        {
-            _xDeg += Input.GetAxis("Mouse X") * thirdPersonXSpeed * 0.02f;
-            _yDeg -= Input.GetAxis("Mouse Y") * thirdPersonYSpeed * 0.02f;
-
-        }
-        _yDeg = ClampAngle(_yDeg, thirdPersonMinimumY, thirdPersonMaximumY);
-
-        Quaternion rotation = Quaternion.Euler(_yDeg, _xDeg, 0);
-
-        _desiredDistance -= Input.GetAxis("Mouse ScrollWheel") * Time.deltaTime * thirdPersonZoomRate * Mathf.Abs(_desiredDistance);
-        _desiredDistance = Mathf.Clamp(_desiredDistance, thirdPersonMinDistance, thirdPersonMaxDistance);
-        _correctedDistance = _desiredDistance;
-
-        vTargetOffset = new Vector3(0, -thirdPersonTargetHeight, 0);
-        Vector3 position = target.transform.position - (rotation * Vector3.forward * _desiredDistance + vTargetOffset);
-
-        RaycastHit collisionHit;
-        Vector3 trueTargetPosition = new Vector3(target.transform.position.x, target.transform.position.y + thirdPersonTargetHeight, target.transform.position.z);
-
-        var isCorrected = false;
-        if (Physics.Linecast(trueTargetPosition, position, out collisionHit, _collisionLayers))
-        {
-            _correctedDistance = Vector3.Distance(trueTargetPosition, collisionHit.point) - thirdPersonOffsetFromWall;
-            isCorrected = true;
-        }
-
-        _currentDistance = !isCorrected || _correctedDistance > _currentDistance ? Mathf.Lerp(_currentDistance, _correctedDistance, Time.deltaTime * thirdPersonZoomDampening) : _correctedDistance;
-
-        _currentDistance = Mathf.Clamp(_currentDistance, thirdPersonMinDistance, thirdPersonMaxDistance);
-
-        position = target.transform.position - (rotation * Vector3.forward * _currentDistance + vTargetOffset);
-
-        transform.rotation = rotation;
-        transform.position = position;
     }
 
     private void RotateBehindTarget()
@@ -225,5 +235,4 @@ public class CameraController : MonoBehaviour
             angle -= 360f;
         return Mathf.Clamp(angle, min, max);
     }   
-
 }

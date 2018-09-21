@@ -11,7 +11,7 @@ public class Character : MonoBehaviour {
     private Vector3 _moveDirection = Vector3.zero;
     private CharacterController _controller;
     private float _verticalVelocity;
-    private float _turnSpeed = 150;
+    private float _turnSpeed = 250;
     public float jumpForce = 13;
     private float _gravityJump = 14;
     private Gun _actualGun;
@@ -22,6 +22,7 @@ public class Character : MonoBehaviour {
     public GameObject flashlight;
     private InteractableObject _interactableObject;
     public float useObjectRange;
+    private bool inmunity;
 
     void Start () {
         _controller = GetComponent<CharacterController>();
@@ -30,6 +31,7 @@ public class Character : MonoBehaviour {
         _runSpeed = speed + 5;
         currentHealth = health;
         flashlight.SetActive(false);
+        inmunity = false;
     }
 
 	void Update () {
@@ -47,11 +49,16 @@ public class Character : MonoBehaviour {
 
     private void InteractableObjectNearby()
     {
-        if (mainCamera.MousePosition(useObjectRange) != null && 
-            mainCamera.MousePosition(useObjectRange).tag.Equals("InteractableObject") && 
-            Input.GetKeyDown(manager.utils.interactWithObjects))
+        if (mainCamera.MousePosition() != null)
         {
-            InteractWithObject(mainCamera.MousePosition(useObjectRange));
+            GameObject interactableObject = mainCamera.MousePosition();
+
+            if (interactableObject.tag.Equals("InteractableObject") &&
+                Input.GetKeyDown(manager.utils.interactWithObjects) &&
+                Vector3.Distance(interactableObject.transform.position, transform.position) < useObjectRange)
+            {
+                InteractWithObject(interactableObject);
+            }
         }
     }
 
@@ -145,12 +152,16 @@ public class Character : MonoBehaviour {
     public void GodMode()
     {
         jumpForce += 50;
-        //TO DO - Lot of damage and inmunity
+
+        inmunity = !inmunity;
+        //TO DO - Lot of damage
     }
 
     public void TakeDamage(float damage)
     {
-        currentHealth -= damage;  
+        if (!inmunity) {
+            currentHealth -= damage;
+        }
     }
 
     public void Flashlight()
