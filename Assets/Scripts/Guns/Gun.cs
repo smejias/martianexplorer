@@ -34,8 +34,15 @@ public class Gun : MonoBehaviour {
             RaycastHit hit;
             laserLine.SetPosition(0, gunEnd.position);
             FindObjectOfType<AudioManager>().Play("Laser Shot");
+			Ray mouseDirection = Camera.main.ScreenPointToRay (Input.mousePosition);
+			Vector3 pointRay = Vector3.zero;
 
-            if (Physics.Raycast(rayOrigin, Input.mousePosition, out hit, weaponRange))
+			if (Physics.Raycast (mouseDirection, out hit, 1000)) {
+				pointRay = hit.point;
+			}
+			Vector3 direction = (pointRay - transform.position).normalized;
+
+			if (Physics.Raycast(rayOrigin,direction, out hit, weaponRange))
             {
                 laserLine.SetPosition(1, hit.point);
 
