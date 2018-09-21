@@ -46,7 +46,6 @@ public class CameraController : MonoBehaviour
     private float _frameCounter = 5;
     Quaternion originalRotation;
     public GameObject shootingPoint;
-    public bool fpsOn = false;
 
     private Manager manager;
 
@@ -96,7 +95,7 @@ public class CameraController : MonoBehaviour
 
     void LateUpdate()
     {
-        SwitchCameras();
+        ThirdPersonCamera();
     }
 
     private void SwitchCameras()
@@ -116,8 +115,6 @@ public class CameraController : MonoBehaviour
 
     private void FirstPersonCamera()
     {
-        Cursor.visible = false;
-        fpsOn = true;
         shootingPoint.SetActive(true);
         transform.position = new Vector3(target.transform.position.x, target.transform.position.y + 1,  target.transform.position.z);
 
@@ -165,7 +162,6 @@ public class CameraController : MonoBehaviour
         Cursor.visible = true;
         if (!manager.Paused)
         {
-            fpsOn = false;
             shootingPoint.SetActive(false);
             if (target == null)
                 return;

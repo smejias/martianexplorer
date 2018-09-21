@@ -10,7 +10,7 @@ public class Gun : MonoBehaviour {
     protected float weaponRange;
     protected float hitForce;                                       
     public Transform gunEnd;
-    public Camera mainCamera;                                              
+    public CameraController mainCamera;                                              
     protected WaitForSeconds shotDuration = new WaitForSeconds(0.07f);    
     protected AudioSource gunAudio;                                       
     protected LineRenderer laserLine;
@@ -18,6 +18,7 @@ public class Gun : MonoBehaviour {
     protected Manager manager;
 
     void Start () {
+        mainCamera = GameObject.Find("MainCamera").GetComponent<CameraController>();
     }
 	
 	void Update () {
@@ -29,12 +30,12 @@ public class Gun : MonoBehaviour {
         {
             nextFire = Time.time + fireRate;
             StartCoroutine(ShotEffect());
-            Vector3 rayOrigin = mainCamera.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0.0f));
+            Vector3 rayOrigin = transform.position;
             RaycastHit hit;
             laserLine.SetPosition(0, gunEnd.position);
             FindObjectOfType<AudioManager>().Play("Laser Shot");
 
-            if (Physics.Raycast(rayOrigin, mainCamera.transform.forward, out hit, weaponRange))
+            if (Physics.Raycast(rayOrigin, Input.mousePosition, out hit, weaponRange))
             {
                 laserLine.SetPosition(1, hit.point);
 
@@ -46,7 +47,7 @@ public class Gun : MonoBehaviour {
             }
             else
             {
-                laserLine.SetPosition(1, rayOrigin + (mainCamera.transform.forward * weaponRange));                
+                laserLine.SetPosition(1, rayOrigin + (Input.mousePosition * weaponRange));                
             }
         }
     }

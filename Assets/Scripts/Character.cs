@@ -16,6 +16,7 @@ public class Character : MonoBehaviour {
     private float _gravityJump = 14;
     private Gun _actualGun;
     public CameraController mainCamera;
+    public UI ui;
     private float _runSpeed;
     public Manager manager;
     public float health, currentHealth;
@@ -23,11 +24,13 @@ public class Character : MonoBehaviour {
     private InteractableObject _interactableObject;
     public float useObjectRange;
     private bool inmunity;
-
+    private bool fpsOn = false;
+    
     void Start () {
         _controller = GetComponent<CharacterController>();
         _anim = gameObject.GetComponentInChildren<Animator>();
         mainCamera = GameObject.Find("MainCamera").GetComponent<CameraController>();
+        ui = GameObject.Find("Canvas").GetComponent<UI>();
         _runSpeed = speed + 5;
         currentHealth = health;
         flashlight.SetActive(false);
@@ -39,6 +42,7 @@ public class Character : MonoBehaviour {
         Shooting();
         Flashlight();
         InteractableObjectNearby();
+        ui.ShootingUI(fpsOn);
     }
 
     private void InteractWithObject(GameObject interactableObject)
@@ -64,10 +68,18 @@ public class Character : MonoBehaviour {
 
     private void Shooting()
     {
-        if (Input.GetMouseButton(1) && Input.GetMouseButton(0))
+        if (Input.GetMouseButton(1) && !manager.Paused)
         {
-            _actualGun = (Gun) FindObjectOfType(typeof(Gun));
-            _actualGun.Shoot();
+            fpsOn = true;
+            if (Input.GetMouseButton(0))
+            {
+                _actualGun = (Gun)FindObjectOfType(typeof(Gun));
+                _actualGun.Shoot();
+            }
+        }
+        else
+        {
+            fpsOn = false;
         }
     }
 
@@ -102,7 +114,7 @@ public class Character : MonoBehaviour {
         _moveDirection.y = gravity * Time.deltaTime * Physics.gravity.y;
         _controller.Move(_moveDirection * Time.deltaTime);      
 
-        if (CheckFPS())
+        if (fpsOn)
         {
             FpsRotation();
         }
@@ -123,7 +135,16 @@ public class Character : MonoBehaviour {
 
     private void FpsRotation()
     {
-        transform.forward = new Vector3(mainCamera.transform.forward.x, transform.forward.y, mainCamera.transform.forward.z);
+        Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit floorHit;
+
+        if (Physics.Raycast(camRay, out floorHit, 100))
+        {
+            Vector3 playerToMouse = floorHit.point - transform.position;
+            playerToMouse.y = 0f;
+            Quaternion newRotation = Quaternion.LookRotation(playerToMouse);
+            transform.rotation = Quaternion.LookRotation(playerToMouse);
+        }
     }
 
     private void Jump()
@@ -142,11 +163,6 @@ public class Character : MonoBehaviour {
         }
         Vector3 jumpVector = new Vector3(0, _verticalVelocity, 0);
         _controller.Move(jumpVector * Time.deltaTime);
-    }
-
-    public bool CheckFPS()
-    {
-        return mainCamera.fpsOn;
     }
 
     public void GodMode()

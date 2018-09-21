@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Manager : MonoBehaviour {
 
@@ -18,7 +19,8 @@ public class Manager : MonoBehaviour {
 	
 	void Update () {
         OpenConsole();
-	}
+        PauseGame();
+    }
 
     private void OpenConsole()
     {
@@ -39,6 +41,10 @@ public class Manager : MonoBehaviour {
     public void PauseGame()
     {
         if (Input.GetKeyDown(utils.pause) && !_paused)
+        {
+            Pause(!_paused);
+        }
+        else if (Input.GetKeyDown(utils.pause) && _paused)
         {
             Pause(!_paused);
         }
@@ -72,5 +78,63 @@ public class Manager : MonoBehaviour {
         {
             _paused = value;
         }
+    }
+
+    public void ExitGame()
+    {
+        Application.Quit();
+    }
+
+    public void WinLevel(int level)
+    {
+        switch (level)
+        {
+            case 1:
+                SceneManager.LoadScene("Level2", LoadSceneMode.Single);
+                StartLevel();
+                break;
+            case 2:
+                SceneManager.LoadScene("Level3", LoadSceneMode.Single);
+                StartLevel();
+                break;
+            case 3:
+                SceneManager.LoadScene("WinScene", LoadSceneMode.Single);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public int GetLevelNumber()
+    {
+        Scene scene = SceneManager.GetActiveScene();
+        switch (scene.name)
+        {
+            case "IntroScene":
+                return 0;
+            case "Level1":
+                return 1;
+            case "Level2":
+                return 2;
+            case "Level3":
+                return 3;
+            case "Tutorial":
+                return 99;
+            default:
+                return 4;
+        }
+    }
+
+    public void StartLevel()
+    {
+        /*int numberLevel = GetLevelNumber();
+        if (numberLevel != 0 && numberLevel != 4)
+        {
+
+        }
+        winEnabled = true;
+        alreadyRestarting = false*/
+
+        // TO DO - Scene management and win condition
     }
 }

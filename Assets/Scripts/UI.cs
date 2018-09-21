@@ -24,4 +24,9 @@ public class UI : MonoBehaviour {
         _playerCurrentHealth = player.GetComponent<Character>().currentHealth;
         damage.text = "Life: " + _playerCurrentHealth;
     }
+
+    public void ShootingUI(bool state)
+    {
+        //Cursor.visible = state;
+    }
 }
