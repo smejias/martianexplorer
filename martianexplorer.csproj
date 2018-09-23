@@ -362,6 +362,8 @@
     <Compile Include="Assets\Scripts\CameraController.cs" />
     <Compile Include="Assets\Scripts\Character.cs" />
     <Compile Include="Assets\Scripts\Console.cs" />
+    <Compile Include="Assets\Scripts\Enemies\Enemies.cs" />
+    <Compile Include="Assets\Scripts\Enemies\WP.cs" />
     <Compile Include="Assets\Scripts\Guns\BasicPistol.cs" />
     <Compile Include="Assets\Scripts\Guns\Gun.cs" />
     <Compile Include="Assets\Scripts\Interactable Objects\ClickableOnly.cs" />

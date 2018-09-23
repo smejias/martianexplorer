@@ -142,7 +142,6 @@ public class Character : MonoBehaviour {
         {
             Vector3 playerToMouse = floorHit.point - transform.position;
             playerToMouse.y = 0f;
-            Quaternion newRotation = Quaternion.LookRotation(playerToMouse);
             transform.rotation = Quaternion.LookRotation(playerToMouse);
         }
     }
@@ -168,7 +167,6 @@ public class Character : MonoBehaviour {
     public void GodMode()
     {
         jumpForce += 50;
-
         inmunity = !inmunity;
         //TO DO - Lot of damage
     }
