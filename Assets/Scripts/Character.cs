@@ -21,7 +21,7 @@ public class Character : MonoBehaviour {
     public Manager manager;
     public float health, currentHealth;
     public GameObject flashlight;
-    private InteractableObject _interactableObject;
+    private InteractiveObject _interactiveObject;
     public float useObjectRange;
     private bool inmunity;
     private bool fpsOn = false;
@@ -54,11 +54,16 @@ public class Character : MonoBehaviour {
         }
     }
 
+    private void Awake()
+    {
+        manager = GameObject.Find("GameManager").GetComponent<Manager>();
+        ui = GameObject.Find("Canvas").GetComponent<UI>();
+    }
+
     void Start () {
         _controller = GetComponent<CharacterController>();
         _anim = gameObject.GetComponentInChildren<Animator>();
         mainCamera = GameObject.Find("MainCamera").GetComponent<CameraController>();
-        ui = GameObject.Find("Canvas").GetComponent<UI>();
         _runSpeed = speed + 5;
         currentHealth = health;
         flashlight.SetActive(false);
@@ -71,25 +76,24 @@ public class Character : MonoBehaviour {
             Movement();
             Shooting();
             Flashlight();
-            InteractableObjectNearby();
-            ui.ShootingUI(fpsOn);
+            InteractiveObjectNearby();
             Die();
         }
     }
 
     private void InteractWithObject(GameObject interactableObject)
     {
-        _interactableObject = interactableObject.GetComponent<InteractableObject>();
-        _interactableObject.Activate(transform.position);
+        _interactiveObject = interactableObject.GetComponent<InteractiveObject>();
+        _interactiveObject.Activate(transform.position);
     }
 
-    private void InteractableObjectNearby()
+    private void InteractiveObjectNearby()
     {
         if (mainCamera.MousePosition() != null)
         {
             GameObject interactableObject = mainCamera.MousePosition();
 
-            if (interactableObject.tag.Equals("InteractableObject") &&
+            if (interactableObject.tag.Equals("InteractiveObject") &&
                 Input.GetKeyDown(manager.utils.interactWithObjects) &&
                 Vector3.Distance(interactableObject.transform.position, transform.position) < useObjectRange)
             {

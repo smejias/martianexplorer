@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Gun : MonoBehaviour {
 
-    private int gunDamage;
+    private int _gunDamage;
     protected float fireRate;
     protected float weaponRange;
     protected float hitForce;                                       
@@ -16,6 +16,19 @@ public class Gun : MonoBehaviour {
     protected LineRenderer laserLine;
     protected float nextFire;
     protected Manager manager;
+
+    public int GunDamage
+    {
+        get
+        {
+            return _gunDamage;
+        }
+
+        set
+        {
+            _gunDamage = value;
+        }
+    }
 
     void Start () {
         mainCamera = GameObject.Find("MainCamera").GetComponent<CameraController>();
@@ -64,18 +77,5 @@ public class Gun : MonoBehaviour {
         laserLine.enabled = true;
         yield return shotDuration;
         laserLine.enabled = false;
-    }
-
-    public int GunDamage
-    {
-        get
-        {
-            return gunDamage;
-        }
-
-        set
-        {
-            gunDamage = value;
-        }
     }
 }

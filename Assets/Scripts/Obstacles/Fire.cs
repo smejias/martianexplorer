@@ -5,11 +5,11 @@ using UnityEngine;
 public class Fire : Obstacle {
 
     public bool switchOn;
-    private ParticleSystem ps;
+    private ParticleSystem _ps;
 
     private void Start()
     {
-        ps = GetComponent<ParticleSystem>();
+        _ps = GetComponent<ParticleSystem>();
     }
 
     ParticleSystem system
@@ -77,9 +77,9 @@ public class Fire : Obstacle {
 
     public void Switch()
     {
-        if (ps.isPlaying && switchOn == false)
+        if (_ps.isPlaying && switchOn == false)
         {
-            ps.Stop(includeChildren, ParticleSystemStopBehavior.StopEmitting);
+            _ps.Stop(includeChildren, ParticleSystemStopBehavior.StopEmitting);
         }
     }
 }

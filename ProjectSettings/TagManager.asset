@@ -5,7 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Gun
-  - InteractableObject
+  - InteractiveObject
+  - GameManager
+  - Console
   layers:
   - Default
   - TransparentFX

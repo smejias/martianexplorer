@@ -358,6 +358,7 @@
     <Compile Include="Assets\ProCore\ProBuilder\API Examples\Procedural Mesh\ExtrudeRandomEdges.cs" />
     <Compile Include="Assets\ProCore\ProBuilder\API Examples\Runtime Editing\RuntimeEdit.cs" />
     <Compile Include="Assets\ProCore\ProBuilder\API Examples\Vertex Colors\HighlightNearestFace.cs" />
+    <Compile Include="Assets\Scripts\AbstractManager.cs" />
     <Compile Include="Assets\Scripts\AudioManager.cs" />
     <Compile Include="Assets\Scripts\CameraController.cs" />
     <Compile Include="Assets\Scripts\Character.cs" />
@@ -366,9 +367,9 @@
     <Compile Include="Assets\Scripts\Enemies\WP.cs" />
     <Compile Include="Assets\Scripts\Guns\BasicPistol.cs" />
     <Compile Include="Assets\Scripts\Guns\Gun.cs" />
-    <Compile Include="Assets\Scripts\Interactable Objects\ClickableOnly.cs" />
-    <Compile Include="Assets\Scripts\Interactable Objects\HitOnly.cs" />
-    <Compile Include="Assets\Scripts\Interactable Objects\InteractableObject.cs" />
+    <Compile Include="Assets\Scripts\Interactive Objects\ClickableOnly.cs" />
+    <Compile Include="Assets\Scripts\Interactive Objects\HitOnly.cs" />
+    <Compile Include="Assets\Scripts\Interactive Objects\InteractiveObjects.cs" />
     <Compile Include="Assets\Scripts\Manager.cs" />
     <Compile Include="Assets\Scripts\Obstacles\Electrified.cs" />
     <Compile Include="Assets\Scripts\Obstacles\Fire.cs" />

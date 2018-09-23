@@ -6,31 +6,61 @@ using UnityEngine.SceneManagement;
 
 public class Manager : MonoBehaviour {
 
-    public GameObject console;
-    private Console _consoleScript;
-    public Character character;
+    public static Manager instance;
+    private Console _console;
     public Utils utils;
-    private bool _paused;
+    private bool _paused = false;
+    private bool _winCondition = false;
+
+    public void Awake()
+    {
+        Singleton();
+    }
 
     void Start () {
-        _consoleScript = console.GetComponent<Console>();
-        RegisterAllCommands();
-        _paused = false;
+        DontDestroyOnLoad(gameObject);
     }
 	
 	void Update () {
         OpenConsole();
         PauseGame();
         Lose();
+        Win();
+    }
+
+    private void Win()
+    {
+        if (_winCondition)
+        {
+            WinScene();
+        }
+    }
+
+    public void StartConsole(GameObject console)
+    {
+        if (_console == null)
+        {
+            _console = console.GetComponent<Console>();
+            RegisterAllCommands();
+        }
     }
 
     private void Lose()
     {
-        if (!Player().IsAlive)
+        if (Player() != null && !Player().IsAlive)
         {
-            Pause(true);
-            print("You lose");
+            LoseScene();
         }
+    }
+
+    private void LoseScene()
+    {
+        SceneManager.LoadScene("LoseScene", LoadSceneMode.Single);
+    }
+
+    private void WinScene()
+    {
+        SceneManager.LoadScene("WinScene", LoadSceneMode.Single);
     }
 
     public Character Player()
@@ -43,16 +73,31 @@ public class Manager : MonoBehaviour {
     {
         if (Input.GetKeyDown(utils.openConsole))
         {
-            console.SetActive(!console.activeSelf);
-            _consoleScript.Initialize();
+            _console.gameObject.SetActive(!_console.gameObject.activeSelf);
+            _console.Initialize();
             Pause(!_paused);
+        }
+    }
+
+    public void Singleton()
+    {
+        var introScenes = GameObject.FindGameObjectsWithTag("GameManager");
+        if (introScenes.Length > 1)
+        {
+            foreach (var scene in introScenes)
+            {
+                if (scene.GetInstanceID() != gameObject.GetInstanceID())
+                {
+                    Destroy(scene);
+                }
+            }
         }
     }
 
     public void RegisterAllCommands()
     {
-        Console.instance.Registercomand("/help", _consoleScript.Help, utils.help);
-        Console.instance.Registercomand("/godmode", character.GodMode, utils.godMode);
+        Console.instance.Registercomand("/help", _console.Help, utils.help);
+        Console.instance.Registercomand("/godmode", Player().GodMode, utils.godMode);
     }
 
     public void PauseGame()
@@ -104,22 +149,7 @@ public class Manager : MonoBehaviour {
 
     public void WinLevel(int level)
     {
-        switch (level)
-        {
-            case 1:
-                SceneManager.LoadScene("Level2", LoadSceneMode.Single);
-                StartLevel();
-                break;
-            case 2:
-                SceneManager.LoadScene("Level3", LoadSceneMode.Single);
-                StartLevel();
-                break;
-            case 3:
-                SceneManager.LoadScene("WinScene", LoadSceneMode.Single);
-                break;
-            default:
-                break;
-        }
+
     }
 
     public int GetLevelNumber()
@@ -142,16 +172,19 @@ public class Manager : MonoBehaviour {
         }
     }
 
-    public void StartLevel()
+    public void StartGame()
     {
-        /*int numberLevel = GetLevelNumber();
-        if (numberLevel != 0 && numberLevel != 4)
-        {
-
-        }
-        winEnabled = true;
-        alreadyRestarting = false*/
-
-        // TO DO - Scene management and win condition
+        SceneManager.LoadScene("Testing_CCC", LoadSceneMode.Single);
     }
+
+    public void LoadCredits()
+    {
+        SceneManager.LoadScene("CreditsScene", LoadSceneMode.Single);
+    }
+
+    public void LoadIntro()
+    {
+        SceneManager.LoadScene("IntroScene", LoadSceneMode.Single);
+    }
+
 }

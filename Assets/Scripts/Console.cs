@@ -22,6 +22,7 @@ public class Console : MonoBehaviour {
     }
 
     void Start () {
+        manager = GameObject.Find("GameManager").GetComponent<Manager>();
         output.text += "To know all the available commands, use /help" + "\n";
         Invoke("CloseSelf", 0.01f);
 	}
