@@ -13,4 +13,12 @@ public class Obstacle : MonoBehaviour {
 	void Update () {
 		
 	}
+
+    public void DoDamage(GameObject other, float damage)
+    {
+        if (other.gameObject.tag == "Player" || other.gameObject.tag == "Enemie")
+        {
+            other.SendMessageUpwards("TakeDamage", damage);
+        }
+    }
 }

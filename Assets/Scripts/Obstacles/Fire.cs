@@ -72,10 +72,7 @@ public class Fire : Obstacle {
 
     public void OnParticleCollision(GameObject other)
     {
-        if(other.gameObject.tag == "Player")
-        {
-            other.SendMessageUpwards("TakeDamage", damage);
-        }
+        DoDamage(other, damage);
     }
 
     public void Switch()
@@ -84,6 +81,5 @@ public class Fire : Obstacle {
         {
             ps.Stop(includeChildren, ParticleSystemStopBehavior.StopEmitting);
         }
-
     }
 }

@@ -25,7 +25,35 @@ public class Character : MonoBehaviour {
     public float useObjectRange;
     private bool inmunity;
     private bool fpsOn = false;
-    
+    private bool canMove = true;
+    private bool isAlive = true;
+
+    public Gun ActualGun
+    {
+        get
+        {
+            return _actualGun;
+        }
+
+        set
+        {
+            _actualGun = value;
+        }
+    }
+
+    public bool IsAlive
+    {
+        get
+        {
+            return isAlive;
+        }
+
+        set
+        {
+            isAlive = value;
+        }
+    }
+
     void Start () {
         _controller = GetComponent<CharacterController>();
         _anim = gameObject.GetComponentInChildren<Animator>();
@@ -38,11 +66,15 @@ public class Character : MonoBehaviour {
     }
 
 	void Update () {
-        Movement();
-        Shooting();
-        Flashlight();
-        InteractableObjectNearby();
-        ui.ShootingUI(fpsOn);
+        if (canMove)
+        {
+            Movement();
+            Shooting();
+            Flashlight();
+            InteractableObjectNearby();
+            ui.ShootingUI(fpsOn);
+            Die();
+        }
     }
 
     private void InteractWithObject(GameObject interactableObject)
@@ -73,8 +105,8 @@ public class Character : MonoBehaviour {
             fpsOn = true;
             if (Input.GetMouseButton(0))
             {
-                _actualGun = (Gun)FindObjectOfType(typeof(Gun));
-                _actualGun.Shoot();
+                ActualGun = (Gun)FindObjectOfType(typeof(Gun));
+                ActualGun.Shoot();
             }
         }
         else
@@ -183,6 +215,15 @@ public class Character : MonoBehaviour {
         if (Input.GetKeyDown(manager.utils.flashlight))
         {
             flashlight.SetActive(!flashlight.activeInHierarchy);
+        }
+    }
+
+    public void Die()
+    {
+        if (currentHealth <= 0)
+        {
+            canMove = false;
+            isAlive = false;
         }
     }
 }

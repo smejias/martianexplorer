@@ -5,7 +5,7 @@ using UnityEngine;
 public class BasicPistol : Gun {
 
 	void Start () {
-      gunDamage = 1;
+      GunDamage = 1;
       fireRate = 0.5f;
       weaponRange = 50;
       hitForce = 100;

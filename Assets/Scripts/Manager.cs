@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -20,6 +21,22 @@ public class Manager : MonoBehaviour {
 	void Update () {
         OpenConsole();
         PauseGame();
+        Lose();
+    }
+
+    private void Lose()
+    {
+        if (!Player().IsAlive)
+        {
+            Pause(true);
+            print("You lose");
+        }
+    }
+
+    public Character Player()
+    {
+        Character actualPlayer = (Character)FindObjectOfType(typeof(Character));
+        return actualPlayer;
     }
 
     private void OpenConsole()

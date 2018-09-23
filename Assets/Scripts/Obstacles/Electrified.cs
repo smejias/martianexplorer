@@ -14,9 +14,6 @@ public class Electrified : Obstacle {
 
    void OnTriggerStay (Collider collision)
     {
-        if (collision.gameObject.tag == "Player")        
-        {
-            collision.SendMessageUpwards("TakeDamage", damage);
-        }
+        DoDamage(collision.gameObject, damage);
     }     
 }
