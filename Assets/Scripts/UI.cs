@@ -21,8 +21,16 @@ public class UI : MonoBehaviour {
 
     void CurrentLife()
     {
+<<<<<<< HEAD
         _playerCurrentHealth = player.GetComponent<Character>().currentHealth;
         damage.text = "Life: " + _playerCurrentHealth;
+=======
+        if (player != null)
+        {
+            _playerCurrentHealth = player.GetComponent<Character>().currentHealth;
+            damage.text = "Life: " + _playerCurrentHealth;
+        }
+>>>>>>> Testing-CCC
     }
 
     public void ShootingUI(bool state)

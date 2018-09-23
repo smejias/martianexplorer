@@ -1,7 +1,13 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: ab6e0d8653f424de2b1196425293fdf3
 folderAsset: yes
 timeCreated: 1537539046
+=======
+guid: b4ab5e82272b83d4587faeb38cb87552
+folderAsset: yes
+timeCreated: 1537657467
+>>>>>>> Testing-CCC
 licenseType: Free
 DefaultImporter:
   externalObjects: {}

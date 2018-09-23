@@ -11,50 +11,107 @@ public class Character : MonoBehaviour {
     private Vector3 _moveDirection = Vector3.zero;
     private CharacterController _controller;
     private float _verticalVelocity;
-    private float _turnSpeed = 150;
+    private float _turnSpeed = 250;
     public float jumpForce = 13;
     private float _gravityJump = 14;
     private Gun _actualGun;
     public CameraController mainCamera;
+    public UI ui;
     private float _runSpeed;
     public Manager manager;
+    public float health, currentHealth;
+    public GameObject flashlight;
+    private InteractableObject _interactableObject;
+    public float useObjectRange;
+    private bool inmunity;
+    private bool fpsOn = false;
+    private bool canMove = true;
+    private bool isAlive = true;
+
+    public Gun ActualGun
+    {
+        get
+        {
+            return _actualGun;
+        }
+
+        set
+        {
+            _actualGun = value;
+        }
+    }
+
+    public bool IsAlive
+    {
+        get
+        {
+            return isAlive;
+        }
+
+        set
+        {
+            isAlive = value;
+        }
+    }
 
     void Start () {
         _controller = GetComponent<CharacterController>();
         _anim = gameObject.GetComponentInChildren<Animator>();
         mainCamera = GameObject.Find("MainCamera").GetComponent<CameraController>();
-        _runSpeed = speed + 3;
+        ui = GameObject.Find("Canvas").GetComponent<UI>();
+        _runSpeed = speed + 5;
+        currentHealth = health;
+        flashlight.SetActive(false);
+        inmunity = false;
     }
 
 	void Update () {
-        Movement();
-        Shooting();
-        InteractWithObject();
-	}
-
-    private void InteractWithObject()
-    {
-        if (Input.GetKeyDown(manager.utils.interactWithObjects) && InteractableObjectNearby())
+        if (canMove)
         {
-            //TO DO - Action when interact
+            Movement();
+            Shooting();
+            Flashlight();
+            InteractableObjectNearby();
+            ui.ShootingUI(fpsOn);
+            Die();
         }
     }
 
-    private bool InteractableObjectNearby()
+    private void InteractWithObject(GameObject interactableObject)
     {
-        bool interactable = false;
+        _interactableObject = interactableObject.GetComponent<InteractableObject>();
+        _interactableObject.Activate(transform.position);
+    }
 
-        //TO DO - Find interactable objects and check the distance
+    private void InteractableObjectNearby()
+    {
+        if (mainCamera.MousePosition() != null)
+        {
+            GameObject interactableObject = mainCamera.MousePosition();
 
-        return interactable;
+            if (interactableObject.tag.Equals("InteractableObject") &&
+                Input.GetKeyDown(manager.utils.interactWithObjects) &&
+                Vector3.Distance(interactableObject.transform.position, transform.position) < useObjectRange)
+            {
+                InteractWithObject(interactableObject);
+            }
+        }
     }
 
     private void Shooting()
     {
-        if (Input.GetMouseButton(1) && Input.GetMouseButton(0))
+        if (Input.GetMouseButton(1) && !manager.Paused)
         {
-            _actualGun = (Gun) FindObjectOfType(typeof(Gun));
-            _actualGun.Shoot();
+            fpsOn = true;
+            if (Input.GetMouseButton(0))
+            {
+                ActualGun = (Gun)FindObjectOfType(typeof(Gun));
+                ActualGun.Shoot();
+            }
+        }
+        else
+        {
+            fpsOn = false;
         }
     }
 
@@ -69,11 +126,11 @@ public class Character : MonoBehaviour {
     {
         if (Input.GetKey(manager.utils.run))
         {
-            speed = _runSpeed;
+            speed = _runSpeed;            
         }
         else
         {
-            speed = _runSpeed - 3;
+            speed = _runSpeed - 5;
         }
     }
 
@@ -87,9 +144,9 @@ public class Character : MonoBehaviour {
         _moveDirection *= speed;
 
         _moveDirection.y = gravity * Time.deltaTime * Physics.gravity.y;
-        _controller.Move(_moveDirection * Time.deltaTime);
+        _controller.Move(_moveDirection * Time.deltaTime);      
 
-        if (CheckFPS())
+        if (fpsOn)
         {
             FpsRotation();
         }
@@ -110,7 +167,15 @@ public class Character : MonoBehaviour {
 
     private void FpsRotation()
     {
-        transform.forward = new Vector3(mainCamera.transform.forward.x, transform.forward.y, mainCamera.transform.forward.z);
+        Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit floorHit;
+
+        if (Physics.Raycast(camRay, out floorHit, 100))
+        {
+            Vector3 playerToMouse = floorHit.point - transform.position;
+            playerToMouse.y = 0f;
+            transform.rotation = Quaternion.LookRotation(playerToMouse);
+        }
     }
 
     private void Jump()
@@ -127,19 +192,38 @@ public class Character : MonoBehaviour {
         {
             _verticalVelocity -= _gravityJump * Time.deltaTime;
         }
-
         Vector3 jumpVector = new Vector3(0, _verticalVelocity, 0);
         _controller.Move(jumpVector * Time.deltaTime);
-    }
-
-    public bool CheckFPS()
-    {
-        return mainCamera.fpsOn;
     }
 
     public void GodMode()
     {
         jumpForce += 50;
-        //TO DO - Lot of damage and inmunity
+        inmunity = !inmunity;
+        //TO DO - Lot of damage
+    }
+
+    public void TakeDamage(float damage)
+    {
+        if (!inmunity) {
+            currentHealth -= damage;
+        }
+    }
+
+    public void Flashlight()
+    {
+        if (Input.GetKeyDown(manager.utils.flashlight))
+        {
+            flashlight.SetActive(!flashlight.activeInHierarchy);
+        }
+    }
+
+    public void Die()
+    {
+        if (currentHealth <= 0)
+        {
+            canMove = false;
+            isAlive = false;
+        }
     }
 }

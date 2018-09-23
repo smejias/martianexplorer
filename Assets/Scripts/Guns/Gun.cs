@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Gun : MonoBehaviour {
 
-    protected int gunDamage;
+    private int gunDamage;
     protected float fireRate;
     protected float weaponRange;
     protected float hitForce;                                       
@@ -37,7 +37,7 @@ public class Gun : MonoBehaviour {
 			Ray mouseDirection = Camera.main.ScreenPointToRay (Input.mousePosition);
 			Vector3 pointRay = Vector3.zero;
 
-			if (Physics.Raycast (mouseDirection, out hit, 1000)) {
+			if (Physics.Raycast (mouseDirection, out hit, 3000)) {
 				pointRay = hit.point;
 			}
 			Vector3 direction = (pointRay - transform.position).normalized;
@@ -64,5 +64,18 @@ public class Gun : MonoBehaviour {
         laserLine.enabled = true;
         yield return shotDuration;
         laserLine.enabled = false;
+    }
+
+    public int GunDamage
+    {
+        get
+        {
+            return gunDamage;
+        }
+
+        set
+        {
+            gunDamage = value;
+        }
     }
 }
