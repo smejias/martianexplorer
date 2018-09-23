@@ -34,7 +34,7 @@ public class Enemies : MonoBehaviour
         speed = 5;
         minSpotedDistance = 7;
         maxSpotedDistance = 15;
-        minAttackDistance = 2;
+        minAttackDistance = 2.5f;
         animationDieLength = 1;
         FindTarget();
     }
