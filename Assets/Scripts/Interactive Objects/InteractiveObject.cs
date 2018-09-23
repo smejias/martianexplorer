@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿    using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -19,12 +19,24 @@ public class InteractiveObject : MonoBehaviour {
 
     public virtual void Activate(Vector3 playerPosition)
     {
-            GetComponent<Renderer>().material = lightOn;
-            if (door != null)
-            {
-                door.TurnOffOn(false);
-            }
-            TriggerObject();            
+        GetComponent<Renderer>().material = lightOn;
+        if (door != null)
+        {
+            door.TurnOffOn(false);
+        }
+        TriggerObject();
+    }
+
+    public virtual void Hit()
+    {
+        if (ps != null)
+        {
+            ps.GetComponent<Fire>().switchOn = false;
+        }
+
+        FindObjectOfType<AudioManager>().Play("Transformer Down");
+        GetComponent<Renderer>().material = offMaterial;
+        GetComponent<Renderer>().material = lightOn;
     }
 
     public void TriggerObject()

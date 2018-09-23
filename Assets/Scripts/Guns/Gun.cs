@@ -62,7 +62,7 @@ public class Gun : MonoBehaviour {
                 if (hit.rigidbody != null)
                 {
                     hit.rigidbody.AddForce(-hit.normal * hitForce);
-                    hit.transform.SendMessage("Hit");
+                    hit.transform.SendMessage("Hit", SendMessageOptions.DontRequireReceiver);
                 }
             }
             else

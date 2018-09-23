@@ -23,4 +23,9 @@ public class ClickableOnly : InteractiveObject {
             GetComponent<Renderer>().material = offMaterial;
         }
     }
+
+    public override void Hit()
+    {
+        
+    }
 }

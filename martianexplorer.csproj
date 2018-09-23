@@ -369,7 +369,7 @@
     <Compile Include="Assets\Scripts\Guns\Gun.cs" />
     <Compile Include="Assets\Scripts\Interactive Objects\ClickableOnly.cs" />
     <Compile Include="Assets\Scripts\Interactive Objects\HitOnly.cs" />
-    <Compile Include="Assets\Scripts\Interactive Objects\InteractiveObjects.cs" />
+    <Compile Include="Assets\Scripts\Interactive Objects\InteractiveObject.cs" />
     <Compile Include="Assets\Scripts\Manager.cs" />
     <Compile Include="Assets\Scripts\Obstacles\Electrified.cs" />
     <Compile Include="Assets\Scripts\Obstacles\Fire.cs" />

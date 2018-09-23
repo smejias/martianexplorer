@@ -16,15 +16,8 @@ public class HitOnly : InteractiveObject {
     {
     }
 
-    public void Hit()
+    public override void Hit()
     {
-        if (ps != null)
-        {
-            ps.GetComponent<Fire>().switchOn = false;
-        }
-
-        FindObjectOfType<AudioManager>().Play("Transformer Down");
-        GetComponent<Renderer>().material = offMaterial;
-        GetComponent<Renderer>().material = lightOn;
+        base.Hit();
     }
 }
