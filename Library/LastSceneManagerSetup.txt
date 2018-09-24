@@ -1,16 +1,4 @@
 sceneSetups:
-- path: Assets/Scenes/IntroScene.unity
+- path: Assets/Scenes/Testing_CCC.unity
   isLoaded: 1
   isActive: 1
-- path: Assets/Scenes/CreditsScene.unity
-  isLoaded: 0
-  isActive: 0
-- path: Assets/Scenes/Testing_CCC.unity
-  isLoaded: 0
-  isActive: 0
-- path: Assets/Scenes/LoseScene.unity
-  isLoaded: 0
-  isActive: 0
-- path: Assets/Scenes/WinScene.unity
-  isLoaded: 0
-  isActive: 0
