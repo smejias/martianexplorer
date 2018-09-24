@@ -42,7 +42,6 @@ public class Gun : MonoBehaviour {
         if (Time.time > nextFire && !manager.Paused)
         {
             nextFire = Time.time + fireRate;
-            StartCoroutine(ShotEffect());
             Vector3 rayOrigin = transform.position;
             RaycastHit hit;
             laserLine.SetPosition(0, gunEnd.position);
@@ -50,25 +49,27 @@ public class Gun : MonoBehaviour {
 			Ray mouseDirection = Camera.main.ScreenPointToRay (Input.mousePosition);
 			Vector3 pointRay = Vector3.zero;
 
-			if (Physics.Raycast (mouseDirection, out hit, 3000)) {
-				pointRay = hit.point;
-			}
-			Vector3 direction = (pointRay - transform.position).normalized;
-
-			if (Physics.Raycast(rayOrigin,direction, out hit, weaponRange))
+			if (Physics.Raycast (mouseDirection, out hit, 1000)) 
             {
-                laserLine.SetPosition(1, hit.point);
-
-                if (hit.rigidbody != null)
+                pointRay = hit.point;
+                Vector3 direction = (pointRay - transform.position).normalized;
+                Debug.Log(hit.point);
+                if (Physics.Raycast(rayOrigin,direction, out hit, weaponRange))
                 {
-                    hit.rigidbody.AddForce(-hit.normal * hitForce);
-                    hit.transform.SendMessage("Hit", SendMessageOptions.DontRequireReceiver);
+                    laserLine.SetPosition(1, hit.point);
+
+                    if (hit.rigidbody != null)
+                    {
+                        hit.rigidbody.AddForce(-hit.normal * hitForce);
+                        hit.transform.SendMessage("Hit", SendMessageOptions.DontRequireReceiver);
+                    }
                 }
-            }
-            else
-            {
-                laserLine.SetPosition(1, rayOrigin + (Input.mousePosition * weaponRange));                
-            }
+                else
+                {
+                    laserLine.SetPosition(1, rayOrigin + (direction * weaponRange));                
+                }
+                StartCoroutine(ShotEffect());
+			}
         }
     }
 
