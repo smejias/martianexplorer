@@ -53,7 +53,6 @@ public class Gun : MonoBehaviour {
             {
                 pointRay = hit.point;
                 Vector3 direction = (pointRay - transform.position).normalized;
-                Debug.Log(hit.point);
                 if (Physics.Raycast(rayOrigin,direction, out hit, weaponRange))
                 {
                     laserLine.SetPosition(1, hit.point);

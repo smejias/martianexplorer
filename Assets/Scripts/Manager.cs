@@ -30,9 +30,17 @@ public class Manager : MonoBehaviour {
 
     private void Win()
     {
-        if (_winCondition)
+        var enemies = GameObject.FindGameObjectsWithTag("Enemies");
+        _winCondition = enemies.Length == 0;
+
+        Scene activeScene = SceneManager.GetActiveScene();
+        if (activeScene.name == "Testing_CCC")
         {
-            WinScene();
+            if (_winCondition)
+            {
+                WinScene();
+                _winCondition = false;
+            }
         }
     }
 

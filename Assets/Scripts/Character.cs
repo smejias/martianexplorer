@@ -143,7 +143,7 @@ public class Character : MonoBehaviour {
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 
-        _moveDirection = new Vector3(0, 0, vertical);
+        _moveDirection = new Vector3(horizontal, 0, vertical);
         _moveDirection = transform.TransformDirection(_moveDirection);
         _moveDirection *= speed;
 
