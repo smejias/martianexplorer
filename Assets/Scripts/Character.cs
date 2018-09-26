@@ -56,7 +56,7 @@ public class Character : MonoBehaviour {
 
     private void Awake()
     {
-        manager = GameObject.Find("GameManager").GetComponent<Manager>();
+    
         ui = GameObject.Find("Canvas").GetComponent<UI>();
     }
 
