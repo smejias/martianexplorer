@@ -18,7 +18,7 @@ public class Character : MonoBehaviour {
     public CameraController mainCamera;
     public UI ui;
     private float _runSpeed;
-    public Manager manager;
+    private Manager _manager;
     public float health, currentHealth;
     public GameObject flashlight;
     private InteractiveObject _interactiveObject;
@@ -55,12 +55,12 @@ public class Character : MonoBehaviour {
     }
 
     private void Awake()
-    {
-    
-        ui = GameObject.Find("Canvas").GetComponent<UI>();
+    {    
+        //ui = GameObject.Find("Canvas").GetComponent<UI>();
     }
 
     void Start () {
+        _manager = GameObject.Find("GameManager").GetComponent<Manager>();
         _controller = GetComponent<CharacterController>();
         _anim = gameObject.GetComponentInChildren<Animator>();
         mainCamera = GameObject.Find("MainCamera").GetComponent<CameraController>();
@@ -94,7 +94,7 @@ public class Character : MonoBehaviour {
             GameObject interactableObject = mainCamera.MousePosition();
 
             if (interactableObject.tag.Equals("InteractiveObject") &&
-                Input.GetKeyDown(manager.utils.interactWithObjects) &&
+                Input.GetKeyDown(_manager.utils.interactWithObjects) &&
                 Vector3.Distance(interactableObject.transform.position, transform.position) < useObjectRange)
             {
                 InteractWithObject(interactableObject);
@@ -104,7 +104,7 @@ public class Character : MonoBehaviour {
 
     private void Shooting()
     {
-        if (Input.GetMouseButton(1) && !manager.Paused)
+        if (Input.GetMouseButton(1) && !_manager.Paused)
         {
             fpsOn = true;
             if (Input.GetMouseButton(0))
@@ -128,7 +128,7 @@ public class Character : MonoBehaviour {
 
     private void Run()
     {
-        if (Input.GetKey(manager.utils.run))
+        if (Input.GetKey(_manager.utils.run))
         {
             speed = _runSpeed;            
         }
@@ -187,7 +187,7 @@ public class Character : MonoBehaviour {
         if (_controller.isGrounded)
         {          
             _verticalVelocity = -_gravityJump * Time.deltaTime;
-            if (Input.GetKeyDown(manager.utils.jump))
+            if (Input.GetKeyDown(_manager.utils.jump))
             {
                 _verticalVelocity = jumpForce;
             }
@@ -216,7 +216,7 @@ public class Character : MonoBehaviour {
 
     public void Flashlight()
     {
-        if (Input.GetKeyDown(manager.utils.flashlight))
+        if (Input.GetKeyDown(_manager.utils.flashlight))
         {
             flashlight.SetActive(!flashlight.activeInHierarchy);
         }
