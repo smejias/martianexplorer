@@ -24,7 +24,7 @@ public class Character : MonoBehaviour {
     private InteractiveObject _interactiveObject;
     public float useObjectRange;
     private bool inmunity;
-    private bool fpsOn = false;
+    private bool _shootingOn = false;
     private bool canMove = true;
     private bool isAlive = true;
 
@@ -106,7 +106,7 @@ public class Character : MonoBehaviour {
     {
         if (Input.GetMouseButton(1) && !_manager.Paused)
         {
-            fpsOn = true;
+            _shootingOn = true;
             if (Input.GetMouseButton(0))
             {
                 ActualGun = (Gun)FindObjectOfType(typeof(Gun));
@@ -115,7 +115,7 @@ public class Character : MonoBehaviour {
         }
         else
         {
-            fpsOn = false;
+            _shootingOn = false;
         }
     }
 
@@ -150,9 +150,9 @@ public class Character : MonoBehaviour {
         _moveDirection.y = gravity * Time.deltaTime * Physics.gravity.y;
         _controller.Move(_moveDirection * Time.deltaTime);      
 
-        if (fpsOn)
+        if (_shootingOn)
         {
-            FpsRotation();
+            ShootingRotation();
         }
         else
         {
@@ -169,16 +169,19 @@ public class Character : MonoBehaviour {
         }
     }
 
-    private void FpsRotation()
+    private void ShootingRotation()
     {
         Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit floorHit;
+        RaycastHit hit;
 
-        if (Physics.Raycast(camRay, out floorHit, 100))
+        if (Physics.Raycast(camRay, out hit, 100))
         {
-            Vector3 playerToMouse = floorHit.point - transform.position;
-            playerToMouse.y = 0f;
-            transform.rotation = Quaternion.LookRotation(playerToMouse);
+            if (!hit.collider.name.Equals(gameObject.name))
+            {
+                Vector3 playerToMouse = hit.point - transform.position;
+                playerToMouse.y = 0f;
+                transform.rotation = Quaternion.LookRotation(playerToMouse);
+            }
         }
     }
 
