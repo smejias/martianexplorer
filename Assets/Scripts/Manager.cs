@@ -44,7 +44,7 @@ public class Manager : MonoBehaviour {
                 _winCondition = false;
             }
         }
-    }
+    }   
 
     public void StartConsole(GameObject console)
     {
@@ -108,6 +108,10 @@ public class Manager : MonoBehaviour {
     {
         Console.instance.Registercomand("/help", _console.Help, utils.help);
         Console.instance.Registercomand("/godmode", Player().GodMode, utils.godMode);
+        Console.instance.Registercomand("/fastermovement", Player().FasterMovement, utils.fasterMovement);
+        Console.instance.Registercomand("/undetectable", Player().Undetect, utils.undetect);
+        Console.instance.Registercomand("/win", ConsoleWin, utils.win);
+        Console.instance.Registercomand("/lose", ConsoleLose, utils.lose);
     }
 
     public void PauseGame()
@@ -157,33 +161,25 @@ public class Manager : MonoBehaviour {
         Application.Quit();
     }
 
-    public void WinLevel(int level)
+    public void ConsoleWin(bool state)
     {
-
+            _console.gameObject.SetActive(!_console.gameObject.activeSelf);
+            _console.Initialize();
+            Pause(!_paused);
+            WinScene();
     }
 
-    public int GetLevelNumber()
+    public void ConsoleLose(bool state)
     {
-        Scene scene = SceneManager.GetActiveScene();
-        switch (scene.name)
-        {
-            case "IntroScene":
-                return 0;
-            case "Level1":
-                return 1;
-            case "Level2":
-                return 2;
-            case "Level3":
-                return 3;
-            case "Tutorial":
-                return 99;
-            default:
-                return 4;
-        }
+            _console.gameObject.SetActive(!_console.gameObject.activeSelf);
+            _console.Initialize();
+            Pause(!_paused);
+            LoseScene();
     }
 
     public void StartGame()
     {
+
         SceneManager.LoadScene("Testing_CCC", LoadSceneMode.Single);
     }
 

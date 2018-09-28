@@ -10,6 +10,7 @@ public class BasicPistol : Gun {
       weaponRange = 50;
       hitForce = 100;
       manager = GameObject.Find("GameManager").GetComponent<Manager>();
+      _initialGunDamage = GunDamage;
     }
 	
 	void Update () {

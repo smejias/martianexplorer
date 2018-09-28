@@ -16,6 +16,7 @@ public class Gun : MonoBehaviour {
     protected LineRenderer laserLine;
     protected float nextFire;
     protected Manager manager;
+    protected int _initialGunDamage;
 
     public int GunDamage
     {
@@ -27,6 +28,19 @@ public class Gun : MonoBehaviour {
         set
         {
             _gunDamage = value;
+        }
+    }
+
+    public int InitialGunDamage
+    {
+        get
+        {
+            return _initialGunDamage;
+        }
+
+        set
+        {
+            _initialGunDamage = value;
         }
     }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class Console : MonoBehaviour {
 
@@ -9,12 +10,12 @@ public class Console : MonoBehaviour {
 
     public delegate void FunctionPrototype();
     public Dictionary<string, string> allCommands = new Dictionary<string, string>();
-    public Dictionary<string, FunctionPrototype> allCommandsEffects = new Dictionary<string, FunctionPrototype>();
-
+    public Dictionary<string, Action<bool>> allCommandsEffects = new Dictionary<string, Action<bool>>();
     public InputField input;
     public Text output;
     public GameObject visualConsole;
     public Manager manager;
+    public String[] boolKeys;
 
     public void Awake()
     {
@@ -38,19 +39,60 @@ public class Console : MonoBehaviour {
             if (Input.GetKeyDown(manager.utils.enter) && input.text != "")
             {
                 Write(input.text);
+                var functionToUse = input.text.Split(' ');
 
-                if (allCommands.ContainsKey(input.text))
+                if (allCommands.ContainsKey(functionToUse[0]))
                 {
-                    allCommandsEffects[input.text].Invoke();
+                    Boolean convertedBoolean = true;
+                    if (functionToUse.Length > 1)
+                    {            
+                        bool hasKey = false; 
+                        foreach(var key in manager.utils.boolKeys)     
+                        {
+                            if(key.Equals(functionToUse[1]))
+                            {    
+                                hasKey = true;        
+                            }
+                        }
+                        if (hasKey)
+                        {
+                            convertedBoolean = ConvertToBoolean(functionToUse[1]);      
+                            allCommandsEffects[functionToUse[0]](convertedBoolean);  
+                        }
+                        else
+                        {
+                            Write("The operator " + functionToUse[1] + " does not exist");
+                        }
+                    }
+                    allCommandsEffects[functionToUse[0]](convertedBoolean);
                 }
                 else
                 {
-                    Write("The command " + input.text + " does not exist");
+                    Write("The command " + functionToUse[0] + " does not exist");
                 }
-
                 input.text = "";
             }
         }
+    }
+
+    private Boolean ConvertToBoolean(string text)
+    {
+        Boolean result = false;
+        foreach(var key in manager.utils.boolKeysTrue)     
+        {
+            if(key.Equals(text))
+            {    
+                result = true;        
+            }       
+        }            
+        foreach(var key in manager.utils.boolKeysFalse)     
+        {
+            if(key.Equals(text))
+            {    
+                result = false;        
+            }       
+        }         
+        return result;    
     }
 
     private void CloseSelf()
@@ -80,13 +122,13 @@ public class Console : MonoBehaviour {
         input.Select();
     }
 
-    public void Registercomand(string commandName, FunctionPrototype function, string description)
+    public void Registercomand(string commandName, Action<bool> function, string description)
     {
         allCommandsEffects.Add(commandName, function);
         allCommands.Add(commandName, description);
     }
 
-    public void Help()
+    public void Help(bool state)
     {
         foreach (var item in allCommands)
         {

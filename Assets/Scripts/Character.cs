@@ -28,6 +28,11 @@ public class Character : MonoBehaviour {
     private float _turnSpeed = 250;
     private Vector3 _moveDirection = Vector3.zero;
     private CharacterController _controller;
+    private float _initialSpeed;
+    private bool _undetectable = false;
+    private bool _fasterSpeed = false;
+
+    private Boolean _infiniteJump = false;
 
     public Gun ActualGun
     {
@@ -39,6 +44,19 @@ public class Character : MonoBehaviour {
         set
         {
             _actualGun = value;
+        }
+    }
+
+    public bool Undetectable
+    {
+        get
+        {
+            return _undetectable;
+        }
+
+        set
+        {
+            _undetectable = value;
         }
     }
 
@@ -60,10 +78,11 @@ public class Character : MonoBehaviour {
         _controller = GetComponent<CharacterController>();
         _anim = gameObject.GetComponentInChildren<Animator>();
         mainCamera = GameObject.Find("MainCamera").GetComponent<CameraController>();
-        _runSpeed = speed + 5;
+        _runSpeed = 3;
         currentHealth = health;
         flashlight.SetActive(false);
         inmunity = false;
+        _initialSpeed = speed;
     }
 
 	void Update () {
@@ -75,6 +94,7 @@ public class Character : MonoBehaviour {
             InteractiveObjectNearby();
             Die();
         }
+        _anim.SetBool("isGrounded", _controller.isGrounded);
     }
 
     private void InteractWithObject(GameObject interactableObject)
@@ -105,7 +125,7 @@ public class Character : MonoBehaviour {
             _shootingOn = true;
             if (Input.GetMouseButton(0))
             {
-                ActualGun = (Gun)FindObjectOfType(typeof(Gun));
+                GetActualGun();
                 ActualGun.Shoot();
             }
         }
@@ -122,17 +142,35 @@ public class Character : MonoBehaviour {
         Jump();
     }
 
+    private void GetActualGun()
+    {
+        ActualGun = (Gun)FindObjectOfType(typeof(Gun));
+    }
+
+    public void LandEnd()
+    {
+        _canMove = true;
+    }
+
+    public void LandStart()
+    {
+        _canMove = false;
+    }
+
     private void Run()
     {
-        if (Input.GetKey(_manager.utils.run) && _controller.isGrounded)
+        if (!_fasterSpeed)
         {
-            speed = _runSpeed;
-            _isRunning = true;
-        }
-        else
-        {
-            speed = _runSpeed - 5;
-            _isRunning = false;
+            if (Input.GetKey(_manager.utils.run) && _controller.isGrounded)
+            {
+                speed = _initialSpeed + _runSpeed;
+                _isRunning = true;
+            }
+            else
+            {
+                speed = _initialSpeed;
+                _isRunning = false;
+            }
         }
     }
 
@@ -159,9 +197,13 @@ public class Character : MonoBehaviour {
 
         if (_controller.isGrounded)
         {
-            if (vertical != 0)
+            if ((vertical != 0 && !_isRunning) || (horizontal != 0 && !_isRunning))
             {
                 _anim.SetInteger("AnimationPar", 1);
+            }
+            else if (vertical != 0 && _isRunning)
+            {
+                _anim.SetInteger("AnimationPar", 2);
             }
             else
             {
@@ -188,11 +230,12 @@ public class Character : MonoBehaviour {
 
     private void Jump()
     {
-        if (_controller.isGrounded)
+        if (_controller.isGrounded || _infiniteJump)
         {
             _verticalVelocity = -_gravityJump * Time.deltaTime;
             if (Input.GetKeyDown(_manager.utils.jump))
             {
+                _anim.SetTrigger("jump");
                 _verticalVelocity = jumpForce;
             }
         }
@@ -204,11 +247,32 @@ public class Character : MonoBehaviour {
         _controller.Move(jumpVector * Time.deltaTime);
     }
 
-    public void GodMode()
+    public void GodMode(bool state)
     {
-        jumpForce += 50;
-        inmunity = !inmunity;
-        //TO DO - Lot of damage
+        GetActualGun();
+        if (state)
+        {
+            ActualGun.GunDamage = 100;
+            inmunity = true;
+        }
+        else
+        {
+            ActualGun.GunDamage = ActualGun.InitialGunDamage;
+            inmunity = false;
+        }        
+    }
+
+    public void FasterMovement(bool state)
+    {
+        _fasterSpeed = state;
+        if (state && speed < 15)
+        {
+            speed += 15;
+        }
+        else
+        {
+            speed = _initialSpeed;
+        }
     }
 
     public void TakeDamage(float damage)
@@ -233,5 +297,10 @@ public class Character : MonoBehaviour {
             _canMove = false;
             _isAlive = false;
         }
+    }
+
+    public void Undetect(bool state)
+    {
+        Undetectable = state;
     }
 }

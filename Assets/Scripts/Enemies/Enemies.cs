@@ -26,6 +26,8 @@ public class Enemies : MonoBehaviour
     protected float animationDieLength;
     protected float damage;
     protected float nextAttack;
+    protected bool _undetecting;
+    protected Character _actualPlayer;
 
     void Start()
     {
@@ -36,6 +38,7 @@ public class Enemies : MonoBehaviour
         maxSpotedDistance = 15;
         minAttackDistance = 2.5f;
         animationDieLength = 1;
+        Player();
         FindTarget();
     }
 
@@ -100,7 +103,7 @@ public class Enemies : MonoBehaviour
 
     private void HitPlayer()
     {
-        if (Player().IsAlive)
+        if (_actualPlayer.IsAlive)
         {
             target.SendMessageUpwards("TakeDamage", damage);
         }
@@ -137,7 +140,7 @@ public class Enemies : MonoBehaviour
                     }
                 }
             }
-            else
+            else if (!_actualPlayer.Undetectable)
             {
                 GoTo();
             }
@@ -168,8 +171,11 @@ public class Enemies : MonoBehaviour
 
     public void Hit()
     {
-        TakeDamage(Player().ActualGun.GunDamage);
-        playerSpoted = true;
+        TakeDamage(_actualPlayer.ActualGun.GunDamage);
+        if (!_actualPlayer.Undetectable)
+        {
+            playerSpoted = true;
+        }
     }
 
     public void TakeDamage(float damage)
@@ -192,9 +198,8 @@ public class Enemies : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public Character Player()
+    public void Player()
     {
-        Character actualPlayer = (Character)FindObjectOfType(typeof(Character));
-        return actualPlayer;
+        _actualPlayer = (Character)FindObjectOfType(typeof(Character));
     }
 }

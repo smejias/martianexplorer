@@ -10,7 +10,6 @@ public class UI : MonoBehaviour {
     public GameObject player;
     public Slider healthSlider;
     public Texture2D initialCursor;
-    private bool _damaged = false;
     private float _playerCurrentHealth;
 
     void Start ()
