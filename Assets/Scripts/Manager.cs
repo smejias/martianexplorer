@@ -6,11 +6,12 @@ using UnityEngine.SceneManagement;
 
 public class Manager : MonoBehaviour {
 
-    public static Manager instance;
     private Console _console;
     public Utils utils;
+    public static Manager instance;
     private bool _paused = false;
     private bool _winCondition = false;
+
 
     public void Awake()
     {
@@ -18,6 +19,7 @@ public class Manager : MonoBehaviour {
     }
 
     void Start () {
+
         DontDestroyOnLoad(gameObject);
     }
 	

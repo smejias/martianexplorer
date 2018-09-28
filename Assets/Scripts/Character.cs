@@ -5,28 +5,29 @@ using UnityEngine;
 
 public class Character : MonoBehaviour {
 
-    private Animator _anim;
+    public float useObjectRange;
     public float speed;
     public float gravity;
-    private Vector3 _moveDirection = Vector3.zero;
-    private CharacterController _controller;
-    private float _verticalVelocity;
-    private float _turnSpeed = 250;
     public float jumpForce = 13;
-    private float _gravityJump = 14;
-    private Gun _actualGun;
     public CameraController mainCamera;
     public UI ui;
-    private float _runSpeed;
-    private Manager _manager;
     public float health, currentHealth;
     public GameObject flashlight;
+    private float _gravityJump = 14;
+    private Gun _actualGun;
     private InteractiveObject _interactiveObject;
-    public float useObjectRange;
+    private float _runSpeed;
+    private Manager _manager;
+    private Animator _anim;
     private bool inmunity;
     private bool _shootingOn = false;
-    private bool canMove = true;
-    private bool isAlive = true;
+    private bool _canMove = true;
+    private bool _isAlive = true;
+    private bool _isRunning = false;
+    private float _verticalVelocity;
+    private float _turnSpeed = 250;
+    private Vector3 _moveDirection = Vector3.zero;
+    private CharacterController _controller;
 
     public Gun ActualGun
     {
@@ -45,18 +46,13 @@ public class Character : MonoBehaviour {
     {
         get
         {
-            return isAlive;
+            return _isAlive;
         }
 
         set
         {
-            isAlive = value;
+            _isAlive = value;
         }
-    }
-
-    private void Awake()
-    {    
-        //ui = GameObject.Find("Canvas").GetComponent<UI>();
     }
 
     void Start () {
@@ -71,7 +67,7 @@ public class Character : MonoBehaviour {
     }
 
 	void Update () {
-        if (canMove)
+        if (_canMove)
         {
             Movement();
             Shooting();
@@ -128,13 +124,15 @@ public class Character : MonoBehaviour {
 
     private void Run()
     {
-        if (Input.GetKey(_manager.utils.run))
+        if (Input.GetKey(_manager.utils.run) && _controller.isGrounded)
         {
-            speed = _runSpeed;            
+            speed = _runSpeed;
+            _isRunning = true;
         }
         else
         {
             speed = _runSpeed - 5;
+            _isRunning = false;
         }
     }
 
@@ -159,13 +157,16 @@ public class Character : MonoBehaviour {
             transform.Rotate(0, horizontal * _turnSpeed * Time.deltaTime, 0);
         }
 
-        if (vertical != 0 && _controller.isGrounded)
+        if (_controller.isGrounded)
         {
-            _anim.SetInteger("AnimationPar", 1);
-        }
-        else
-        {
-            _anim.SetInteger("AnimationPar", 0);
+            if (vertical != 0)
+            {
+                _anim.SetInteger("AnimationPar", 1);
+            }
+            else
+            {
+                _anim.SetInteger("AnimationPar", 0);
+            }
         }
     }
 
@@ -188,7 +189,7 @@ public class Character : MonoBehaviour {
     private void Jump()
     {
         if (_controller.isGrounded)
-        {          
+        {
             _verticalVelocity = -_gravityJump * Time.deltaTime;
             if (Input.GetKeyDown(_manager.utils.jump))
             {
@@ -229,8 +230,8 @@ public class Character : MonoBehaviour {
     {
         if (currentHealth <= 0)
         {
-            canMove = false;
-            isAlive = false;
+            _canMove = false;
+            _isAlive = false;
         }
     }
 }
