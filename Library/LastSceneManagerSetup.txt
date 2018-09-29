@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Scenes/Testing_CCC.unity
+- path: Assets/Scenes/Stage_1_Prototype.unity
   isLoaded: 1
   isActive: 1
