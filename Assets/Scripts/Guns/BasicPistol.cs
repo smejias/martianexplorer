@@ -11,11 +11,11 @@ public class BasicPistol : Gun {
       hitForce = 100;
       manager = GameObject.Find("GameManager").GetComponent<Manager>();
       _initialGunDamage = GunDamage;
+      _audioSource = GetComponent<AudioSource>();
     }
 	
 	void Update () {
         laserLine = GetComponent<LineRenderer>();
-        gunAudio = GetComponent<AudioSource>();
     }
 
     public override void Shoot()

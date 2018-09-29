@@ -69,6 +69,7 @@ ModelImporter:
     7400012: Jump_loop
     7400014: Float
     7400016: Jump_end
+    7400018: Armature|CharacterAnimation
     9500000: //RootNode
     13700000: Player
   externalObjects:

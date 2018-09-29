@@ -5,21 +5,36 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class Manager : MonoBehaviour {
-
-    private Console _console;
+    
     public Utils utils;
     public static Manager instance;
+    private GameObject _lifeBar;
     private bool _paused = false;
     private bool _winCondition = false;
+    private Console _console;
+    private GameObject _pauseMenu;
+    private bool _canLose = true;
 
+    public bool Paused
+    {
+        get
+        {
+            return _paused;
+        }
+
+        set
+        {
+            _paused = value;
+        }
+    }
 
     public void Awake()
     {
         Singleton();
     }
 
-    void Start () {
-
+    void Start ()
+    {
         DontDestroyOnLoad(gameObject);
     }
 	
@@ -55,11 +70,21 @@ public class Manager : MonoBehaviour {
         }
     }
 
+    public void StartPauseMenu(GameObject pauseMenu)
+    {
+        if (_pauseMenu == null)
+        {
+            _pauseMenu = pauseMenu;
+            _pauseMenu.SetActive(false);
+        }
+    }
+
     private void Lose()
     {
-        if (Player() != null && !Player().IsAlive)
+        if (Player() != null && !Player().IsAlive && _canLose)
         {
-            LoseScene();
+            _canLose = false;
+            Invoke("LoseScene", 4);
         }
     }
 
@@ -81,12 +106,17 @@ public class Manager : MonoBehaviour {
 
     private void OpenConsole()
     {
-        if (Input.GetKeyDown(utils.openConsole))
+        if (Input.GetKeyDown(utils.openConsole) && !_pauseMenu.activeInHierarchy)
         {
-            _console.gameObject.SetActive(!_console.gameObject.activeSelf);
-            _console.Initialize();
+            OpenCloseConsole(!_console.gameObject.activeSelf);
             Pause(!_paused);
+            _console.Initialize();
         }
+    }
+
+    private void OpenCloseConsole(bool state)
+    {
+        _console.gameObject.SetActive(state);
     }
 
     public void Singleton()
@@ -116,12 +146,9 @@ public class Manager : MonoBehaviour {
 
     public void PauseGame()
     {
-        if (Input.GetKeyDown(utils.pause) && !_paused)
+        if (Input.GetKeyDown(utils.pause))
         {
-            Pause(!_paused);
-        }
-        else if (Input.GetKeyDown(utils.pause) && _paused)
-        {
+            PauseMenu(!_paused);
             Pause(!_paused);
         }
     }
@@ -138,22 +165,22 @@ public class Manager : MonoBehaviour {
         {
             pauseScale = 1;
         }
-
+        
+        TurnOnOffLifeBar();
         Time.timeScale = pauseScale;
         _paused = pause;
     }
 
-    public bool Paused
+    public void PauseMenu(bool state)
     {
-        get
-        {
-            return _paused;
-        }
+        OpenCloseConsole(false);
+        _pauseMenu.gameObject.SetActive(state);
+    }
 
-        set
-        {
-            _paused = value;
-        }
+    public void Continue()
+    {
+        Pause(false);
+        PauseMenu(false);
     }
 
     public void ExitGame()
@@ -163,24 +190,29 @@ public class Manager : MonoBehaviour {
 
     public void ConsoleWin(bool state)
     {
-            _console.gameObject.SetActive(!_console.gameObject.activeSelf);
-            _console.Initialize();
-            Pause(!_paused);
-            WinScene();
+        OpenCloseConsole(false);
+        Pause(!_paused);
+        WinScene();
     }
 
     public void ConsoleLose(bool state)
     {
-            _console.gameObject.SetActive(!_console.gameObject.activeSelf);
-            _console.Initialize();
-            Pause(!_paused);
-            LoseScene();
+        OpenCloseConsole(false);
+        Pause(!_paused);
+        LoseScene();
     }
 
     public void StartGame()
     {
-
         SceneManager.LoadScene("Testing_CCC", LoadSceneMode.Single);
+        _canLose = true;
+    }
+
+    public void RestartGame()
+    {
+        OpenCloseConsole(false);
+        Pause(false);
+        StartGame();
     }
 
     public void LoadCredits()
@@ -190,7 +222,19 @@ public class Manager : MonoBehaviour {
 
     public void LoadIntro()
     {
+        Pause(false);
         SceneManager.LoadScene("IntroScene", LoadSceneMode.Single);
     }
 
+    public void TurnOnOffLifeBar()
+    {
+        if (_lifeBar == null)
+        {
+            _lifeBar = GameObject.Find("HealthBarBacking");
+        }
+        if (_lifeBar != null)
+        {
+            _lifeBar.gameObject.SetActive(!_lifeBar.gameObject.activeSelf);
+        }
+    }
 }

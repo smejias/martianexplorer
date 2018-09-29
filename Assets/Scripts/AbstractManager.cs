@@ -6,13 +6,14 @@ using UnityEngine.SceneManagement;
 
 public class AbstractManager : MonoBehaviour
 {
-    private Manager _gameManager;
     public GameObject console;
+    public GameObject pauseMenu;
+    private Manager _gameManager;
 
     void Start()
     {
         _gameManager = GameObject.Find("GameManager").GetComponent<Manager>();
-        StartConsole();
+        StartMenus();
     }
 
     void Update()
@@ -29,11 +30,27 @@ public class AbstractManager : MonoBehaviour
         _gameManager.ExitGame();
     }
     
-    private void StartConsole()
+    private void StartMenus()
     {
         if (SceneManager.GetActiveScene().name == "Testing_CCC")
         {
             _gameManager.StartConsole(console);
+            _gameManager.StartPauseMenu(pauseMenu);
         }
+    }
+
+    public void StartGame()
+    {
+        _gameManager.StartGame();
+    }
+
+    public void Continue()
+    {
+        _gameManager.Continue();
+    }
+
+    public void RestartGame()
+    {
+        _gameManager.RestartGame();
     }
 }

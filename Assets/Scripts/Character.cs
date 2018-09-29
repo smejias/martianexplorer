@@ -13,13 +13,14 @@ public class Character : MonoBehaviour {
     public UI ui;
     public float health, currentHealth;
     public GameObject flashlight;
+    public AudioClip[] footstepSounds;
     private float _gravityJump = 14;
     private Gun _actualGun;
     private InteractiveObject _interactiveObject;
     private float _runSpeed;
     private Manager _manager;
     private Animator _anim;
-    private bool inmunity;
+    private bool _inmunity;
     private bool _shootingOn = false;
     private bool _canMove = true;
     private bool _isAlive = true;
@@ -31,9 +32,13 @@ public class Character : MonoBehaviour {
     private float _initialSpeed;
     private bool _undetectable = false;
     private bool _fasterSpeed = false;
-
-    private Boolean _infiniteJump = false;
-
+    private AudioSource _audioSource;
+    private Vector2 _input;
+    private float _stepCycle;
+    [Range(0f, 1f)] private float _runstepLenghten;
+    private float _nextStep;
+    private float _stepInterval = 2.5f;
+    
     public Gun ActualGun
     {
         get
@@ -73,7 +78,21 @@ public class Character : MonoBehaviour {
         }
     }
 
+    public bool ShootingOn
+    {
+        get
+        {
+            return _shootingOn;
+        }
+
+        set
+        {
+            _shootingOn = value;
+        }
+    }
+
     void Start () {
+        _audioSource = GetComponent<AudioSource>();
         _manager = GameObject.Find("GameManager").GetComponent<Manager>();
         _controller = GetComponent<CharacterController>();
         _anim = gameObject.GetComponentInChildren<Animator>();
@@ -81,20 +100,30 @@ public class Character : MonoBehaviour {
         _runSpeed = 3;
         currentHealth = health;
         flashlight.SetActive(false);
-        inmunity = false;
+        _inmunity = false;
         _initialSpeed = speed;
+        _stepCycle = 0f;
+        _nextStep = _stepCycle / 2f;
     }
 
 	void Update () {
         if (_canMove)
         {
-            Movement();
             Shooting();
             Flashlight();
             InteractiveObjectNearby();
             Die();
+            UpdateInput();
+            Movement();
         }
-        _anim.SetBool("isGrounded", _controller.isGrounded);
+    }
+
+    private void FixedUpdate()
+    {
+        if (_canMove)
+        {
+            
+        }
     }
 
     private void InteractWithObject(GameObject interactableObject)
@@ -122,7 +151,7 @@ public class Character : MonoBehaviour {
     {
         if (Input.GetMouseButton(1) && !_manager.Paused)
         {
-            _shootingOn = true;
+            ShootingOn = true;
             if (Input.GetMouseButton(0))
             {
                 GetActualGun();
@@ -131,12 +160,14 @@ public class Character : MonoBehaviour {
         }
         else
         {
-            _shootingOn = false;
+            ShootingOn = false;
         }
     }
 
     private void Movement()
     {
+        _anim.SetBool("isGrounded", _controller.isGrounded);
+        ProgressStepCycle(speed);
         Run();
         Walk();
         Jump();
@@ -186,7 +217,7 @@ public class Character : MonoBehaviour {
         _moveDirection.y = gravity * Time.deltaTime * Physics.gravity.y;
         _controller.Move(_moveDirection * Time.deltaTime);      
 
-        if (_shootingOn)
+        if (ShootingOn)
         {
             ShootingRotation();
         }
@@ -230,7 +261,7 @@ public class Character : MonoBehaviour {
 
     private void Jump()
     {
-        if (_controller.isGrounded || _infiniteJump)
+        if (_controller.isGrounded)
         {
             _verticalVelocity = -_gravityJump * Time.deltaTime;
             if (Input.GetKeyDown(_manager.utils.jump))
@@ -253,12 +284,12 @@ public class Character : MonoBehaviour {
         if (state)
         {
             ActualGun.GunDamage = 100;
-            inmunity = true;
+            _inmunity = true;
         }
         else
         {
             ActualGun.GunDamage = ActualGun.InitialGunDamage;
-            inmunity = false;
+            _inmunity = false;
         }        
     }
 
@@ -277,7 +308,7 @@ public class Character : MonoBehaviour {
 
     public void TakeDamage(float damage)
     {
-        if (!inmunity) {
+        if (!_inmunity) {
             currentHealth -= damage;
         }
     }
@@ -296,11 +327,48 @@ public class Character : MonoBehaviour {
         {
             _canMove = false;
             _isAlive = false;
+            _anim.SetTrigger("Die");
         }
     }
 
     public void Undetect(bool state)
     {
         Undetectable = state;
+    }
+
+    private void ProgressStepCycle(float speed)
+    {
+        if ((_input.x != 0 || _input.y != 0) && _controller.isGrounded)
+        {
+            _stepCycle += (_controller.velocity.magnitude + speed) * Time.deltaTime;
+        }
+        if (!(_stepCycle > _nextStep))
+        {
+            return;
+        }
+        _nextStep = _stepCycle + _stepInterval;
+
+        PlayFootStepAudio();
+    }
+
+    public void UpdateInput()
+    {
+        float horizontal = Input.GetAxis("Horizontal");
+        float vertical = Input.GetAxis("Vertical");
+
+        _input = new Vector2(horizontal, vertical);
+        if (_input.sqrMagnitude > 1)
+        {
+            _input.Normalize();
+        }
+    }
+
+    private void PlayFootStepAudio()
+    {
+        int number = UnityEngine.Random.Range(1, footstepSounds.Length);
+        _audioSource.clip = footstepSounds[number];
+        _audioSource.PlayOneShot(_audioSource.clip);
+        footstepSounds[number] = footstepSounds[0];
+        footstepSounds[0] = _audioSource.clip;
     }
 }

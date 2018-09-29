@@ -177,6 +177,25 @@ MonoBehaviour:
   flashlight: 102
   help: List of available commands
   godMode: Inmunity to everything and brutal damage
+  fasterMovement: Increases your movement speed
+  undetect: Enemies wont detect you anymore!
+  win: Win the game
+  lose: Lose the game
+  boolKeys:
+  - on
+  - true
+  - active
+  - off
+  - false
+  - inactive
+  boolKeysTrue:
+  - on
+  - true
+  - active
+  boolKeysFalse:
+  - off
+  - false
+  - inactive
 --- !u!1 &95612183
 GameObject:
   m_ObjectHideFlags: 0

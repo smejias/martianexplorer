@@ -6,31 +6,35 @@ using UnityEngine.AI;
 
 public class Enemies : MonoBehaviour
 {
-    private int _currentWp;
-    public WP waypoints;
-    protected float speed;
-    private bool canMove = true;
-    private bool canAttack = true;
+    public float life;
     public GameObject target;
-    private bool playerSpoted = false;
+    public WP waypoints;
+    protected float speed;  
     protected int minSpotedDistance;
-    protected int maxSpotedDistance;
-    private float curTime;
+    protected int maxSpotedDistance;    
     protected float pauseDuration = 1;
     protected float attackRate = 2;
     protected float dampingLook = 3;
-    protected bool loop = true;
-    private bool advance = true;
-    protected float minAttackDistance;
-    public float life;
+    protected bool loop = true;    
+    protected float minAttackDistance;    
     protected float animationDieLength;
     protected float damage;
     protected float nextAttack;
     protected bool _undetecting;
     protected Character _actualPlayer;
+    private int _currentWp;
+    private float curTime;
+    private bool advance = true;
+    private bool canMove = true;
+    private bool canAttack = true;
+    private bool playerSpoted = false;
+    private MeshRenderer _renderer;
+    private Color _normalColor;
 
     void Start()
     {
+        _renderer = GetComponent<MeshRenderer>();
+        _normalColor = _renderer.material.color;
         damage = 5;
         life = 5;
         speed = 5;
@@ -181,6 +185,7 @@ public class Enemies : MonoBehaviour
     public void TakeDamage(float damage)
     {
         life -= damage;
+        DamageFlash();
     }
 
     public void Die()
@@ -193,13 +198,24 @@ public class Enemies : MonoBehaviour
         }
     }
     
-    public void Destroy()
+    private void Destroy()
     {
         Destroy(gameObject);
     }
 
-    public void Player()
+    private void Player()
     {
         _actualPlayer = (Character)FindObjectOfType(typeof(Character));
+    }
+
+    private void DamageFlash()
+    {
+        _renderer.material.color = Color.red;
+        Invoke("ResetColor", 0.5f);
+    }
+
+    private void ResetColor()
+    {
+        _renderer.material.color = _normalColor;
     }
 }

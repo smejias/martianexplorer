@@ -33,8 +33,6 @@ public class InteractiveObject : MonoBehaviour {
         {
             ps.GetComponent<Fire>().switchOn = false;
         }
-
-        FindObjectOfType<AudioManager>().Play("Transformer Down");
         GetComponent<Renderer>().material = offMaterial;
         GetComponent<Renderer>().material = lightOn;
     }

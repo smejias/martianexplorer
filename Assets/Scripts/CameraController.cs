@@ -159,7 +159,6 @@ public class CameraController : MonoBehaviour
 
     private void ThirdPersonCamera()
     {
-        Cursor.visible = true;
         if (!manager.Paused)
         {
             shootingPoint.SetActive(false);

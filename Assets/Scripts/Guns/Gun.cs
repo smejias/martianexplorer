@@ -5,18 +5,19 @@ using UnityEngine;
 
 public class Gun : MonoBehaviour {
 
+    public AudioClip gunAudio;
     private int _gunDamage;
     protected float fireRate;
     protected float weaponRange;
     protected float hitForce;                                       
     public Transform gunEnd;
     public CameraController mainCamera;                                              
-    protected WaitForSeconds shotDuration = new WaitForSeconds(0.07f);    
-    protected AudioSource gunAudio;                                       
+    protected WaitForSeconds shotDuration = new WaitForSeconds(0.07f);  
     protected LineRenderer laserLine;
     protected float nextFire;
     protected Manager manager;
     protected int _initialGunDamage;
+    protected AudioSource _audioSource;
 
     public int GunDamage
     {
@@ -44,7 +45,8 @@ public class Gun : MonoBehaviour {
         }
     }
 
-    void Start () {
+    void Start ()
+    {        
         mainCamera = GameObject.Find("MainCamera").GetComponent<CameraController>();
     }
 	
@@ -59,7 +61,6 @@ public class Gun : MonoBehaviour {
             Vector3 rayOrigin = transform.position;
             RaycastHit hit;
             laserLine.SetPosition(0, gunEnd.position);
-            FindObjectOfType<AudioManager>().Play("Laser Shot");
 			Ray mouseDirection = Camera.main.ScreenPointToRay (Input.mousePosition);
 			Vector3 pointRay = Vector3.zero;
 
@@ -88,6 +89,10 @@ public class Gun : MonoBehaviour {
 
     private IEnumerator ShotEffect()
     {
+        if (gunAudio != null)
+        {
+            _audioSource.PlayOneShot(gunAudio);
+        }
         laserLine.enabled = true;
         yield return shotDuration;
         laserLine.enabled = false;
