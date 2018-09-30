@@ -1081,7 +1081,7 @@ GameObject:
   - component: {fileID: 81339192}
   - component: {fileID: 81339191}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: Enemy
   m_TagString: Enemies
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -33205,7 +33205,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 400014, guid: 02dd6406ed1ebc248b2fafd0485e0de9, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 143.8
+      value: 145.1
       objectReference: {fileID: 0}
     - target: {fileID: 400014, guid: 02dd6406ed1ebc248b2fafd0485e0de9, type: 3}
       propertyPath: m_LocalPosition.y
@@ -33213,7 +33213,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400014, guid: 02dd6406ed1ebc248b2fafd0485e0de9, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -17.6
+      value: -17.7
       objectReference: {fileID: 0}
     - target: {fileID: 400014, guid: 02dd6406ed1ebc248b2fafd0485e0de9, type: 3}
       propertyPath: m_LocalRotation.x

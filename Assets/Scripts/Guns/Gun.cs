@@ -6,18 +6,19 @@ using UnityEngine;
 public class Gun : MonoBehaviour {
 
     public AudioClip gunAudio;
+    public Transform gunEnd;
+    public CameraController mainCamera;
     private int _gunDamage;
     protected float fireRate;
     protected float weaponRange;
-    protected float hitForce;                                       
-    public Transform gunEnd;
-    public CameraController mainCamera;                                              
+    protected float hitForce;               
     protected WaitForSeconds shotDuration = new WaitForSeconds(0.07f);  
     protected LineRenderer laserLine;
     protected float nextFire;
     protected Manager manager;
     protected int _initialGunDamage;
     protected AudioSource _audioSource;
+    protected Character actualPlayer;
 
     public int GunDamage
     {
@@ -49,8 +50,8 @@ public class Gun : MonoBehaviour {
     {        
         mainCamera = GameObject.Find("MainCamera").GetComponent<CameraController>();
     }
-	
-	void Update () {
+
+    void Update () {
 	}
 
     public virtual void Shoot()
@@ -96,5 +97,19 @@ public class Gun : MonoBehaviour {
         laserLine.enabled = true;
         yield return shotDuration;
         laserLine.enabled = false;
+    }
+
+    protected void FindPlayer()
+    {
+        if (actualPlayer == null)
+        {
+            actualPlayer = (Character)FindObjectOfType(typeof(Character));
+        }
+    }
+
+    protected void SetGunDamage(int damageReducer)
+    {
+        GunDamage = (int)actualPlayer.health / damageReducer;
+        _initialGunDamage = GunDamage;
     }
 }

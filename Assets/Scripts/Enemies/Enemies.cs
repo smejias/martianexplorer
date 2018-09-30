@@ -36,7 +36,6 @@ public class Enemies : MonoBehaviour
         _renderer = GetComponent<MeshRenderer>();
         _normalColor = _renderer.material.color;
         damage = 5;
-        life = 5;
         speed = 5;
         minSpotedDistance = 7;
         maxSpotedDistance = 15;
@@ -44,6 +43,7 @@ public class Enemies : MonoBehaviour
         animationDieLength = 1;
         Player();
         FindTarget();
+        SetEnemyLife();
     }
 
     void Update()
@@ -117,7 +117,7 @@ public class Enemies : MonoBehaviour
     {
         if (canMove)
         {
-            if (!playerSpoted)
+            if (!playerSpoted || _actualPlayer.Undetectable)
             {
                 if (waypoints != null && waypoints.waypoints.Length > 0)
                 {
@@ -144,7 +144,7 @@ public class Enemies : MonoBehaviour
                     }
                 }
             }
-            else if (!_actualPlayer.Undetectable)
+            else
             {
                 GoTo();
             }
@@ -186,6 +186,12 @@ public class Enemies : MonoBehaviour
     {
         life -= damage;
         DamageFlash();
+        FloatingText(damage);
+    }
+
+    private void FloatingText(float damage)
+    {
+        //TO DO - Text mesh
     }
 
     public void Die()
@@ -211,11 +217,16 @@ public class Enemies : MonoBehaviour
     private void DamageFlash()
     {
         _renderer.material.color = Color.red;
-        Invoke("ResetColor", 0.5f);
+        Invoke("ResetColor", 0.2f);
     }
 
     private void ResetColor()
     {
         _renderer.material.color = _normalColor;
+    }
+
+    public void SetEnemyLife()
+    {
+        life = (int)_actualPlayer.health / 5;
     }
 }

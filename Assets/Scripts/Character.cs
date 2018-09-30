@@ -35,7 +35,6 @@ public class Character : MonoBehaviour {
     private AudioSource _audioSource;
     private Vector2 _input;
     private float _stepCycle;
-    [Range(0f, 1f)] private float _runstepLenghten;
     private float _nextStep;
     private float _stepInterval = 2.5f;
     
