@@ -9,20 +9,16 @@ public class UI : MonoBehaviour {
     public Text damage;   
     public GameObject player;
     public Slider healthSlider;
-    public Texture2D initialCursor;
-    public Texture2D shootCursor;
     public Image bloodImage;
     private float _playerCurrentHealth;
 
     void Start ()
     {
-        StartCursor();
     }
 	
 	void Update ()
     {
         CurrentLife();
-        CurrentCursor();
     }
 
     private void CurrentLife()
@@ -52,33 +48,5 @@ public class UI : MonoBehaviour {
             Color Transparent = new Color(1, 1, 1, 0);
             bloodImage.color = Color.Lerp(bloodImage.color, Transparent, 20 * Time.deltaTime);
         }
-    }
-
-    private void StartCursor()
-    {
-        if (initialCursor != null)
-        {
-            Cursor.SetCursor(initialCursor, Vector2.zero, CursorMode.Auto);
-        }
-    }
-
-    private void ShootCursor()
-    {
-        if (initialCursor != null)
-        {
-            Cursor.SetCursor(shootCursor, Vector2.zero, CursorMode.Auto);
-        }
-    }
-
-    public void CurrentCursor()
-    {
-       if (player.GetComponent<Character>().ShootingOn)
-        {
-            ShootCursor();
-        }
-        else
-        {
-            StartCursor();
-        }
-    }
+    }    
 }

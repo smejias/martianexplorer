@@ -45,7 +45,6 @@ public class CameraController : MonoBehaviour
     float rotAverageY = 0F;
     private float _frameCounter = 5;
     Quaternion originalRotation;
-    public GameObject shootingPoint;
 
     private Manager manager;
 
@@ -115,7 +114,6 @@ public class CameraController : MonoBehaviour
 
     private void FirstPersonCamera()
     {
-        shootingPoint.SetActive(true);
         transform.position = new Vector3(target.transform.position.x, target.transform.position.y + 1,  target.transform.position.z);
 
         rotAverageY = 0f;
@@ -161,7 +159,6 @@ public class CameraController : MonoBehaviour
     {
         if (!manager.Paused)
         {
-            shootingPoint.SetActive(false);
             if (target == null)
                 return;
             if (_pbuffer > 0)

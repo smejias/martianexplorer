@@ -143,6 +143,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   utils: {fileID: 83719144}
+  initialCursor: {fileID: 2800000, guid: cf562b8df7fd1b14babfc7b319724e46, type: 3}
+  shootCursor: {fileID: 2800000, guid: 59740f3993eebcd41b138915009e7cca, type: 3}
 --- !u!4 &83719143
 Transform:
   m_ObjectHideFlags: 0

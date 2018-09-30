@@ -8,12 +8,15 @@ public class Manager : MonoBehaviour {
     
     public Utils utils;
     public static Manager instance;
+    public Texture2D initialCursor;
+    public Texture2D shootCursor;
     private GameObject _lifeBar;
     private bool _paused = false;
     private bool _winCondition = false;
     private Console _console;
     private GameObject _pauseMenu;
     private bool _canLose = true;
+    private bool _winGame = false;
 
     public bool Paused
     {
@@ -25,6 +28,32 @@ public class Manager : MonoBehaviour {
         set
         {
             _paused = value;
+        }
+    }
+
+    public bool WinCondition
+    {
+        get
+        {
+            return _winCondition;
+        }
+
+        set
+        {
+            _winCondition = value;
+        }
+    }
+
+    public bool WinGame
+    {
+        get
+        {
+            return _winGame;
+        }
+
+        set
+        {
+            _winGame = value;
         }
     }
 
@@ -43,20 +72,22 @@ public class Manager : MonoBehaviour {
         PauseGame();
         Lose();
         Win();
+        CurrentCursor();
     }
 
     private void Win()
     {
         var enemies = GameObject.FindGameObjectsWithTag("Enemies");
-        _winCondition = enemies.Length == 0;
+        WinCondition = enemies.Length == 0;
 
         Scene activeScene = SceneManager.GetActiveScene();
         if (activeScene.name == "Testing_CCC")
         {
-            if (_winCondition)
+            if (WinCondition)
             {
-                WinScene();
-                _winCondition = false;
+                WinGame = true;
+                WinCondition = false;
+                WinScene();               
             }
         }
     }   
@@ -96,6 +127,7 @@ public class Manager : MonoBehaviour {
     private void WinScene()
     {
         SceneManager.LoadScene("WinScene", LoadSceneMode.Single);
+        WinGame = false;
     }
 
     public Character Player()
@@ -235,6 +267,34 @@ public class Manager : MonoBehaviour {
         if (_lifeBar != null)
         {
             _lifeBar.gameObject.SetActive(!_lifeBar.gameObject.activeSelf);
+        }
+    }
+
+    public void CurrentCursor()
+    {
+        if (!WinCondition && Player().ShootingOn && Player().IsAlive)
+        {
+            ShootCursor();
+        }
+        else
+        {
+            StartCursor();
+        }
+    }
+
+    private void StartCursor()
+    {
+        if (initialCursor != null)
+        {
+            Cursor.SetCursor(initialCursor, Vector2.zero, CursorMode.Auto);
+        }
+    }
+
+    private void ShootCursor()
+    {
+        if (initialCursor != null)
+        {
+            Cursor.SetCursor(shootCursor, Vector2.zero, CursorMode.Auto);
         }
     }
 }
