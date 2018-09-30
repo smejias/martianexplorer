@@ -9,6 +9,7 @@ public class Enemies : MonoBehaviour
     public float life;
     public GameObject target;
     public WP waypoints;
+    public TextMesh damageText;
     protected float speed;  
     protected int minSpotedDistance;
     protected int maxSpotedDistance;    
@@ -191,7 +192,8 @@ public class Enemies : MonoBehaviour
 
     private void FloatingText(float damage)
     {
-        //TO DO - Text mesh
+        TextMesh _damageText = Instantiate(damageText, transform.position, transform.rotation);
+        _damageText.text = "-" + damage;
     }
 
     public void Die()

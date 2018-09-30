@@ -1116,6 +1116,8 @@ MonoBehaviour:
   life: 0
   target: {fileID: 1833317108}
   waypoints: {fileID: 1913832295}
+  damageText: {fileID: 102651503961320588, guid: 5b7063139bd4d384ea5367ed7cda1061,
+    type: 2}
 --- !u!23 &81339193
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -33205,15 +33207,15 @@ Prefab:
     m_Modifications:
     - target: {fileID: 400014, guid: 02dd6406ed1ebc248b2fafd0485e0de9, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 145.1
+      value: -3.4
       objectReference: {fileID: 0}
     - target: {fileID: 400014, guid: 02dd6406ed1ebc248b2fafd0485e0de9, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5.9
+      value: 2.1
       objectReference: {fileID: 0}
     - target: {fileID: 400014, guid: 02dd6406ed1ebc248b2fafd0485e0de9, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -17.7
+      value: -1.4
       objectReference: {fileID: 0}
     - target: {fileID: 400014, guid: 02dd6406ed1ebc248b2fafd0485e0de9, type: 3}
       propertyPath: m_LocalRotation.x
