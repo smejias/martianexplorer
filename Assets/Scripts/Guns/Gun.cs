@@ -62,7 +62,8 @@ public class Gun : MonoBehaviour {
             Vector3 rayOrigin = transform.position;
             RaycastHit hit;
             laserLine.SetPosition(0, gunEnd.position);
-			Ray mouseDirection = Camera.main.ScreenPointToRay (Input.mousePosition);
+            Rect rect = new Rect (Input.mousePosition.x, Input.mousePosition.y, 0, 0);
+			Ray mouseDirection = Camera.main.ScreenPointToRay (rect.center);
 			Vector3 pointRay = Vector3.zero;
 
 			if (Physics.Raycast (mouseDirection, out hit, 1000)) 

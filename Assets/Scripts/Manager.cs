@@ -17,6 +17,8 @@ public class Manager : MonoBehaviour {
     private GameObject _pauseMenu;
     private bool _canLose = true;
     private bool _winGame = false;
+    private Vector2 _cursorHotspot;
+    private Character _actualPlayer = null;
 
     public bool Paused
     {
@@ -65,6 +67,7 @@ public class Manager : MonoBehaviour {
     void Start ()
     {
         DontDestroyOnLoad(gameObject);
+        StartShootCursor();       
     }
 	
 	void Update () {
@@ -91,6 +94,12 @@ public class Manager : MonoBehaviour {
             }
         }
     }   
+
+    private void StartShootCursor()
+    {
+        shootCursor = Resize(shootCursor, initialCursor.width,initialCursor.height - 5);
+        _cursorHotspot = new Vector2 (shootCursor.width / 2, shootCursor.height / 2); 
+    }
 
     public void StartConsole(GameObject console)
     {
@@ -131,14 +140,20 @@ public class Manager : MonoBehaviour {
     }
 
     public Character Player()
-    {
-        Character actualPlayer = (Character)FindObjectOfType(typeof(Character));
-        return actualPlayer;
+    {        
+        if (_actualPlayer == null)
+        {
+            if (GameObject.Find("Player") != null)
+            {
+                _actualPlayer = (Character)FindObjectOfType(typeof(Character));
+            }
+        }
+        return _actualPlayer;
     }
 
     private void OpenConsole()
     {
-        if (Input.GetKeyDown(utils.openConsole) && !_pauseMenu.activeInHierarchy)
+        if (Input.GetKeyDown(utils.openConsole) && !_pauseMenu.activeInHierarchy && Player() != null && Player().IsAlive)
         {
             OpenCloseConsole(!_console.gameObject.activeSelf);
             Pause(!_paused);
@@ -178,7 +193,7 @@ public class Manager : MonoBehaviour {
 
     public void PauseGame()
     {
-        if (Input.GetKeyDown(utils.pause))
+        if (Input.GetKeyDown(utils.pause) && Player() != null && Player().IsAlive)
         {
             PauseMenu(!_paused);
             Pause(!_paused);
@@ -206,7 +221,7 @@ public class Manager : MonoBehaviour {
     public void PauseMenu(bool state)
     {
         OpenCloseConsole(false);
-        _pauseMenu.gameObject.SetActive(state);
+        _pauseMenu.gameObject.SetActive(state);        
     }
 
     public void Continue()
@@ -272,7 +287,7 @@ public class Manager : MonoBehaviour {
 
     public void CurrentCursor()
     {
-        if (!WinCondition && Player().ShootingOn && Player().IsAlive)
+        if (!WinCondition && Player() != null && Player().ShootingOn && Player().IsAlive )
         {
             ShootCursor();
         }
@@ -294,7 +309,21 @@ public class Manager : MonoBehaviour {
     {
         if (initialCursor != null)
         {
-            Cursor.SetCursor(shootCursor, Vector2.zero, CursorMode.Auto);
+            Cursor.SetCursor(shootCursor, _cursorHotspot, CursorMode.Auto);
         }
+    }
+
+    public static Texture2D Resize(Texture2D source, int newWidth, int newHeight)
+    {
+    source.filterMode = FilterMode.Point;
+    RenderTexture rt = RenderTexture.GetTemporary(newWidth, newHeight);
+    rt.filterMode = FilterMode.Point;
+    RenderTexture.active = rt;
+    Graphics.Blit(source, rt);
+    Texture2D nTex = new Texture2D(newWidth, newHeight);
+    nTex.ReadPixels(new Rect(0, 0, newWidth, newWidth), 0,0);
+    nTex.Apply();
+    RenderTexture.active = null;
+    return nTex;
     }
 }

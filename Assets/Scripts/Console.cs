@@ -43,6 +43,7 @@ public class Console : MonoBehaviour {
 
                 if (allCommands.ContainsKey(functionToUse[0]))
                 {
+                    string active = " activated!";
                     Boolean convertedBoolean = true;
                     if (functionToUse.Length > 1)
                     {            
@@ -57,7 +58,11 @@ public class Console : MonoBehaviour {
                         if (hasKey)
                         {
                             convertedBoolean = ConvertToBoolean(functionToUse[1]);      
-                            allCommandsEffects[functionToUse[0]](convertedBoolean);  
+                            allCommandsEffects[functionToUse[0]](convertedBoolean); 
+                            if (!convertedBoolean)
+                            {
+                                active = " desactivated!";
+                            }                             
                         }
                         else
                         {
@@ -65,6 +70,7 @@ public class Console : MonoBehaviour {
                         }
                     }
                     allCommandsEffects[functionToUse[0]](convertedBoolean);
+                    Write("Command " + functionToUse[0] + active);
                 }
                 else
                 {
